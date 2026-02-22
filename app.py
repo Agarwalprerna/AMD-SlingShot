@@ -436,64 +436,84 @@ elif app_mode == "About PCOS":
 elif app_mode == "How to Use":
     st.markdown('<div class="header-style">How to Use This System</div>', unsafe_allow_html=True)
     st.markdown("---")
-    
-    st.markdown("""
-    ## Step-by-Step Guide
-    
-    ### Step 1: Gather Clinical Data
-    
-    You'll need the following patient information:
-    - **Demographic:** Age, Height, Weight
-    - **Physical Measurements:** Waist, Hip circumference, Pulse
-    - **Hormonal & Biochemical:** FSH, LH, AMH, Testosterone, Insulin, RBS
-    - **Clinical & Lifestyle:** Acne, hair growth, skin darkening, pimples, exercise, fast food
-    - **Ultrasound (optional):** Image upload + follicle counts
-    
-    ### Step 2: Input Data
-    
-    Go to **"Clinical Parameters Analysis"** tab and:
-    1. Fill 4 simple sections:
-       - **Physical**
-       - **Hormonal & Biochemical**
-       - **Clinical & Lifestyle**
-       - **Upload Ultrasound Images**
-    2. The system automatically calculates:
-       - **BMI** from height and weight
-       - **Waist:Hip Ratio** from measurements
-    
-    ### Step 3: Get Analysis
-    
-    1. Click **"Analyze Patient"** button
-    2. The AI model processes the data
-    3. You'll receive:
-       - **Risk Assessment:** PCOS Likely or Not Likely
-       - **Confidence Score:** Percentage confidence in the prediction
-       - **Suggestions:** Easy next steps based on the result
-       - **Simple Q&A:** Basic questions with plain-language answers
-    
-    ## Important Notes
-    
-    **Disclaimer:**
-    - This system is an **AI-based screening tool** and not a replacement for professional medical diagnosis
-    - Always consult with a qualified healthcare provider for confirmation
-    - Results should be used alongside clinical judgment and ultrasound imaging
-    - Maintain data privacy and patient confidentiality
-    
-    ## Model Accuracy
-    
-    The AI model is trained on a clinical dataset of 541 patients and achieves:
-    - **Accuracy:** 87-92%
-    - **Sensitivity:** ~85-90% (ability to identify PCOS cases)
-    - **Specificity:** ~85-90% (ability to identify non-PCOS cases)
-    
-    ## Contact & Support
-    
-    For issues or questions, please contact the development team.
-    
-    ---
-    
-    **Remember:** This tool is designed for social good - to make PCOS screening accessible to underserved communities! 
-    """)
+
+    steps = [
+        {
+            "title": "Step 1: Gather Basic Information",
+            "text": (
+                "Keep it simple. Collect age, height, weight, waist, hip, and pulse. "
+                "Also keep symptom notes like acne, hair growth, and cycle changes."
+            )
+        },
+        {
+            "title": "Step 2: Add Hormonal and Biochemical Values",
+            "text": (
+                "Enter available test values: FSH, LH, AMH, testosterone, insulin, and RBS. "
+                "If you do not have a value, keep the default."
+            )
+        },
+        {
+            "title": "Step 3: Fill Clinical and Lifestyle Section",
+            "text": (
+                "Choose Yes or No for acne, excess hair growth, skin darkening, pimples, "
+                "fast food, and regular exercise."
+            )
+        },
+        {
+            "title": "Step 4: Upload Ultrasound Images",
+            "text": (
+                "Upload ultrasound image files if available. You can also enter follicle count "
+                "for left and right ovary."
+            )
+        },
+        {
+            "title": "Step 5: Run Analysis",
+            "text": (
+                "Click Analyze Patient. The tool shows risk score, confidence, and simple "
+                "next-step suggestions."
+            )
+        },
+        {
+            "title": "Step 6: Read Result Carefully",
+            "text": (
+                "This is a screening tool, not a final diagnosis. Share the result with a "
+                "qualified gynecologist for confirmation."
+            )
+        },
+    ]
+
+    if "how_to_use_step" not in st.session_state:
+        st.session_state.how_to_use_step = 0
+
+    total_steps = len(steps)
+    current_step = st.session_state.how_to_use_step
+    step_data = steps[current_step]
+
+    st.markdown(f"**Slide {current_step + 1} of {total_steps}**")
+    st.progress((current_step + 1) / total_steps)
+    st.markdown(
+        f"""
+        <div class="info-box">
+            <h3>{step_data['title']}</h3>
+            <p>{step_data['text']}</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    col1, col2, col3 = st.columns([1, 1, 2])
+    with col1:
+        if st.button("Previous", disabled=(current_step == 0), use_container_width=True):
+            st.session_state.how_to_use_step -= 1
+            st.rerun()
+    with col2:
+        if st.button("Next", disabled=(current_step == total_steps - 1), use_container_width=True):
+            st.session_state.how_to_use_step += 1
+            st.rerun()
+    with col3:
+        if st.button("Start Over", use_container_width=True):
+            st.session_state.how_to_use_step = 0
+            st.rerun()
 
 # Footer
 st.markdown("---")
