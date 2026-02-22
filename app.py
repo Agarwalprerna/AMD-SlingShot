@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import os
 from PIL import Image, ImageDraw
+import time
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -489,6 +490,17 @@ elif app_mode == "How to Use":
     current_step = st.session_state.how_to_use_step
     step_data = steps[current_step]
 
+    st.markdown("### Auto-Play (1 second per step)")
+    if st.button("Play 1s Animation", use_container_width=True):
+        placeholder = st.empty()
+        rendered = []
+        for idx, s in enumerate(steps):
+            rendered.append(f"""<div class="info-box"><h3>{s['title']}</h3><p>{s['text']}</p></div>""")
+            placeholder.markdown("\n\n".join(rendered), unsafe_allow_html=True)
+            time.sleep(1)
+        st.session_state.how_to_use_step = total_steps - 1
+
+    st.markdown("### Manual Slides")
     st.markdown(f"**Slide {current_step + 1} of {total_steps}**")
     st.progress((current_step + 1) / total_steps)
     st.markdown(
