@@ -65,7 +65,7 @@ st.markdown("""
     .dna-hero {
         position: relative;
         width: 100%;
-        min-height: 260px;
+        min-height: 360px;
         border-radius: 18px;
         overflow: hidden;
         margin-bottom: 28px;
@@ -73,7 +73,11 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #0a1a3a 0%, #0d2657 40%, #0a3a6e 70%, #0d5099 100%);
+        background-image:
+            linear-gradient(rgba(4, 38, 82, 0.55), rgba(4, 38, 82, 0.55)),
+            radial-gradient(circle at 18% 35%, rgba(52, 174, 240, 0.45), transparent 35%),
+            radial-gradient(circle at 75% 60%, rgba(35, 130, 210, 0.45), transparent 42%),
+            linear-gradient(135deg, #06346a 0%, #0c4f95 35%, #0b3d82 65%, #0a2e65 100%);
         box-shadow: 0 8px 40px rgba(0,80,200,0.5);
     }
     .dna-hero::before {
@@ -97,32 +101,32 @@ st.markdown("""
         position: relative;
         z-index: 2;
         text-align: center;
-        padding: 40px 30px 30px;
+        padding: 36px 30px 30px;
     }
     .dna-hero-title {
-        font-size: 42px;
+        font-size: 72px;
         font-weight: 900;
         color: #FFFFFF;
         letter-spacing: 3px;
         text-shadow: 0 0 30px rgba(0,200,255,0.9), 0 2px 8px rgba(0,0,0,0.6);
-        margin-bottom: 8px;
+        margin-bottom: 2px;
         font-family: Georgia, serif;
     }
     .dna-hero-subtitle {
-        font-size: 13px;
-        letter-spacing: 5px;
-        color: #00CFFF;
+        font-size: 33px;
+        letter-spacing: 2px;
+        color: #E7F5FF;
+        margin-bottom: 4px;
+        font-family: Georgia, serif;
+    }
+    .dna-hero-small {
+        font-size: 28px;
+        letter-spacing: 3px;
+        color: #D4EAFB;
         text-transform: uppercase;
-        margin-bottom: 18px;
-        text-shadow: 0 0 10px rgba(0,180,255,0.6);
+        margin-bottom: 12px;
     }
-    .dna-hero-desc {
-        font-size: 14px;
-        color: rgba(220,240,255,0.85);
-        max-width: 500px;
-        margin: 0 auto;
-        line-height: 1.7;
-    }
+    .dna-hero-desc { display: none; }
     /* dot grid overlay */
     .dna-dots {
         position: absolute;
@@ -136,10 +140,27 @@ st.markdown("""
     .dna-frame {
         position: absolute;
         inset: 14px;
-        border: 1px solid rgba(0,200,255,0.3);
+        border: 2px solid rgba(232, 245, 255, 0.8);
         border-radius: 10px;
         pointer-events: none;
     }
+    .home-logo-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 14px;
+    }
+    .section-card {
+        background: linear-gradient(145deg, #0b2f57 0%, #0a2545 100%);
+        border: 1px solid rgba(120, 188, 238, 0.45);
+        border-left: 6px solid #3da3e3;
+        border-radius: 12px;
+        padding: 14px 14px 8px 14px;
+        margin: 14px 0;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    }
+    .section-card-2 { border-left-color: #66b6ea; }
+    .section-card-3 { border-left-color: #2f87d4; }
+    .section-card-4 { border-left-color: #94c9f0; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -191,6 +212,26 @@ DNA_HERO_SVG = """
     <circle cx="350" cy="200" r="4" fill="#00CFFF"/>
     <circle cx="550" cy="200" r="4" fill="#00CFFF"/>
     <circle cx="450" cy="130" r="6" fill="#00FFDD"/>
+  </g>
+</svg>
+"""
+
+PCOS_LOGO_SVG = """
+<svg width="170" height="120" viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg" aria-label="PCOS logo">
+  <g transform="translate(0,8)">
+    <path d="M45 158 C80 90, 165 140, 245 120 C220 145, 188 162, 160 174 C125 189, 85 192, 45 178 Z" fill="#0b58c6"/>
+    <path d="M194 136 C235 124, 264 106, 285 77 C288 95, 282 112, 268 125 C251 141, 228 149, 194 151 Z" fill="#0b58c6"/>
+    <path d="M170 141 C198 132, 219 116, 236 95 C239 110, 234 125, 222 136 C208 148, 190 154, 170 155 Z" fill="#3a82da"/>
+    <path d="M205 55
+             C205 33, 224 20, 241 20
+             C258 20, 272 31, 272 48
+             C272 85, 233 100, 215 120
+             C195 99, 160 84, 160 53
+             C160 33, 176 20, 194 20
+             C200 20, 205 22, 210 26
+             C212 35, 212 44, 205 55 Z" fill="#e04372"/>
+    <rect x="208" y="53" width="16" height="42" rx="3" fill="#ffffff"/>
+    <rect x="195" y="66" width="42" height="16" rx="3" fill="#ffffff"/>
   </g>
 </svg>
 """
@@ -259,22 +300,27 @@ def load_or_create_model():
 # Load model
 model, model_loaded = load_or_create_model()
 
-def create_awareness_image(title, subtitle, base_color):
-    """Create a simple in-app awareness illustration so the app has visual guidance."""
-    img = Image.new("RGB", (900, 420), "#FFF9FB")
+def create_metric_banner_image():
+    """Create a banner inspired by the awareness reference image."""
+    img = Image.new("RGB", (1100, 420), "#F5F8FA")
     draw = ImageDraw.Draw(img)
 
-    # Soft background blocks
-    draw.rounded_rectangle((30, 30, 870, 390), radius=30, fill="#FFFFFF", outline="#F3D7DF", width=3)
-    draw.rounded_rectangle((60, 70, 420, 350), radius=24, fill=base_color)
-    draw.ellipse((520, 95, 760, 335), fill="#FFE1E8", outline="#F2A7B8", width=4)
-    draw.ellipse((595, 170, 685, 260), fill="#FFFFFF", outline="#F2A7B8", width=3)
+    draw.rounded_rectangle((10, 10, 1090, 410), radius=24, fill="#EAF2F3")
+    draw.ellipse((40, 30, 460, 390), fill="#D9E8E7")
+    draw.ellipse((700, 20, 1050, 370), fill="#E0ECEB")
 
-    # Text
-    draw.text((85, 110), title, fill="#222222")
-    draw.text((85, 170), subtitle, fill="#444444")
-    draw.text((85, 250), "PCOS awareness | Early action matters", fill="#6B7280")
-    draw.text((565, 355), "Women's Health", fill="#AA4C63")
+    uterus_outline = "#f2a8b7"
+    uterus_fill = "#f8ccd6"
+    draw.ellipse((465, 95, 535, 155), fill=uterus_fill, outline=uterus_outline, width=6)
+    draw.polygon([(405, 125), (465, 128), (470, 148), (390, 172)], fill=uterus_fill, outline=uterus_outline)
+    draw.polygon([(535, 128), (595, 125), (610, 172), (530, 148)], fill=uterus_fill, outline=uterus_outline)
+    draw.rounded_rectangle((475, 150, 525, 255), radius=20, fill=uterus_fill, outline=uterus_outline, width=5)
+    draw.rounded_rectangle((488, 252, 512, 318), radius=10, fill=uterus_fill, outline=uterus_outline, width=5)
+    draw.ellipse((356, 157, 395, 196), fill="#f6d5de", outline=uterus_outline, width=4)
+    draw.ellipse((605, 157, 644, 196), fill="#f6d5de", outline=uterus_outline, width=4)
+
+    draw.polygon([(0, 370), (0, 420), (300, 420), (210, 370)], fill="#ede3f7")
+    draw.polygon([(800, 370), (1100, 370), (1100, 420), (720, 420)], fill="#ede3f7")
     return img
 
 # HOME PAGE
@@ -285,8 +331,10 @@ if app_mode == "Home":
         <div class="dna-frame"></div>
         <div class="dna-svg-wrap">{DNA_HERO_SVG}</div>
         <div class="dna-hero-content">
+            <div class="home-logo-wrap">{PCOS_LOGO_SVG}</div>
             <div class="dna-hero-title">PCOS Detection AI</div>
-            <div class="dna-hero-subtitle">Medical Presentation &nbsp;|&nbsp; AI for Social Good</div>
+            <div class="dna-hero-subtitle">Healthcare</div>
+            <div class="dna-hero-small">Medical Presentation</div>
             <div class="dna-hero-desc">
                 An intelligent screening system for Polycystic Ovary Syndrome using clinical parameters,
                 machine learning, and evidence-based diagnostics — accessible to everyone.
@@ -322,18 +370,7 @@ if app_mode == "Home":
         6. **Interpretable** - Shows key factors in diagnosis
         """, unsafe_allow_html=True)
 
-    st.markdown("### PCOS Awareness")
-    img_col1, img_col2 = st.columns(2)
-    with img_col1:
-        st.image(
-            create_awareness_image("Women First Care", "Simple checks for early PCOS screening", "#FFE7EE"),
-            use_container_width=True
-        )
-    with img_col2:
-        st.image(
-            create_awareness_image("Know Your Cycle", "Track symptoms and get support sooner", "#E8F7F1"),
-            use_container_width=True
-        )
+    st.image(create_metric_banner_image(), use_container_width=True)
     
     st.markdown("---")
     st.markdown("### System Statistics")
@@ -359,6 +396,7 @@ elif app_mode == "Clinical Parameters Analysis":
     else:
         st.markdown("### Enter Patient Clinical Data")
         st.markdown("Simple input form for non-doctors. Fill what you know and keep defaults for missing values.")
+        st.markdown('<div class="section-card section-card-1">', unsafe_allow_html=True)
         st.markdown("### 1) Physical")
         col1, col2 = st.columns(2)
         with col1:
@@ -373,6 +411,8 @@ elif app_mode == "Clinical Parameters Analysis":
             waist_hip_ratio = waist_inch / hip_inch
             st.markdown(f"**Calculated Waist:Hip Ratio:** {waist_hip_ratio:.2f}")
             pulse = st.slider("Pulse (bpm)", 40, 120, 75)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-card section-card-2">', unsafe_allow_html=True)
         st.markdown("### 2) Hormonal & Biochemical")
         col1, col2 = st.columns(2)
         with col1:
@@ -383,6 +423,8 @@ elif app_mode == "Clinical Parameters Analysis":
             testo = st.slider("Testosterone (ng/mL)", 0.0, 1.5, 0.5)
             insulin = st.slider("Insulin (U/mL)", 0.0, 25.0, 5.0)
             rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-card section-card-3">', unsafe_allow_html=True)
         st.markdown("### 3) Clinical & Lifestyle")
         col1, col2 = st.columns(2)
         with col1:
@@ -393,6 +435,8 @@ elif app_mode == "Clinical Parameters Analysis":
             pimples = st.selectbox("Pimples", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
             fast_food = st.selectbox("Frequent Fast Food", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
             reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-card section-card-4">', unsafe_allow_html=True)
         st.markdown("### 4) Upload Ultrasound Images")
         uploaded_usg = st.file_uploader(
             "Upload ultrasound image(s) (optional)",
@@ -410,6 +454,7 @@ elif app_mode == "Clinical Parameters Analysis":
             for idx, file in enumerate(uploaded_usg[:3]):
                 with preview_cols[idx]:
                     st.image(file, caption=f"Ultrasound {idx + 1}", use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
         if st.button("Analyze Patient", type="primary", use_container_width=True):
             patient_data = {
                 'Age': age,
@@ -703,5 +748,3 @@ st.markdown("""
     <p><small>Disclaimer: This is a screening tool, not a replacement for professional medical diagnosis.</small></p>
 </div>
 """, unsafe_allow_html=True)
-
-
