@@ -695,13 +695,6 @@ elif app_mode == "How to Use":
         },
     ]
 
-    if "how_to_use_step" not in st.session_state:
-        st.session_state.how_to_use_step = 0
-
-    total_steps = len(steps)
-    current_step = st.session_state.how_to_use_step
-    step_data = steps[current_step]
-
     st.markdown("### Auto-Play (1 second per step)")
     if st.button("Play 1s Animation", use_container_width=True):
         placeholder = st.empty()
@@ -710,34 +703,17 @@ elif app_mode == "How to Use":
             rendered.append(f"""<div class="info-box"><h3>{s['title']}</h3><p>{s['text']}</p></div>""")
             placeholder.markdown("\n\n".join(rendered), unsafe_allow_html=True)
             time.sleep(1)
-        st.session_state.how_to_use_step = total_steps - 1
-
-    st.markdown("### Manual Slides")
-    st.markdown(f"**Slide {current_step + 1} of {total_steps}**")
-    st.progress((current_step + 1) / total_steps)
-    st.markdown(
-        f"""
-        <div class="info-box">
-            <h3>{step_data['title']}</h3>
-            <p>{step_data['text']}</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    col1, col2, col3 = st.columns([1, 1, 2])
-    with col1:
-        if st.button("Previous", disabled=(current_step == 0), use_container_width=True):
-            st.session_state.how_to_use_step -= 1
-            st.rerun()
-    with col2:
-        if st.button("Next", disabled=(current_step == total_steps - 1), use_container_width=True):
-            st.session_state.how_to_use_step += 1
-            st.rerun()
-    with col3:
-        if st.button("Start Over", use_container_width=True):
-            st.session_state.how_to_use_step = 0
-            st.rerun()
+    st.markdown("### Steps Overview")
+    for s in steps:
+        st.markdown(
+            f"""
+            <div class="info-box">
+                <h3>{s['title']}</h3>
+                <p>{s['text']}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 # Footer
 st.markdown("---")
