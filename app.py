@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import pandas as pd
 import pickle
 import os
@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 # Set page configuration
 st.set_page_config(
-    page_title="PCOS Detection AI",
+    page_title=" AI Powered PCOS Detection",
     page_icon="P",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -299,7 +299,21 @@ def load_or_create_model():
 
 # Load model
 model, model_loaded = load_or_create_model()
-HOME_BANNER_IMAGE_PATH = "assets/home-banner.jpg"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+HOME_BANNER_CANDIDATES = [
+    "assets/home-banner.jpg",
+    "assets/home-banner.jpeg",
+    "assets/home-banner.png",
+]
+
+
+def get_home_banner_image_path():
+    """Return first available custom home banner image path, else None."""
+    for rel_path in HOME_BANNER_CANDIDATES:
+        abs_path = os.path.join(BASE_DIR, rel_path)
+        if os.path.exists(abs_path):
+            return abs_path
+    return None
 
 def create_metric_banner_image():
     """Create a banner inspired by the awareness reference image."""
@@ -371,9 +385,14 @@ if app_mode == "Home":
         6. **Interpretable** - Shows key factors in diagnosis
         """, unsafe_allow_html=True)
 
-    if os.path.exists(HOME_BANNER_IMAGE_PATH):
-        st.image(HOME_BANNER_IMAGE_PATH, use_container_width=True)
+    home_banner_path = get_home_banner_image_path()
+    if home_banner_path:
+        st.image(home_banner_path, use_container_width=True)
     else:
+        st.warning(
+            "Custom home image not found. Add one of: "
+            "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
+        )
         st.image(create_metric_banner_image(), use_container_width=True)
     
     st.markdown("---")
