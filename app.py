@@ -22,10 +22,10 @@ st.markdown("""
     .header-style {
         font-size: 36px;
         font-weight: bold;
-        color: #FFFFFF;
+        color: #0B1F3A;
         text-align: center;
         margin-bottom: 10px;
-        text-shadow: 0 0 20px rgba(100,200,255,0.8);
+        text-shadow: none;
         letter-spacing: 2px;
     }
     .subheader-style {
@@ -107,11 +107,21 @@ st.markdown("""
     .dna-hero-title {
         font-size: 72px;
         font-weight: 900;
-        color: #FFFFFF;
+        color: #0B1F3A;
         letter-spacing: 3px;
-        text-shadow: 0 0 30px rgba(0,200,255,0.9), 0 2px 8px rgba(0,0,0,0.6);
+        text-shadow: none;
+        background: #FFFFFF;
+        border-radius: 10px;
+        padding: 4px 14px;
+        display: inline-block;
         margin-bottom: 2px;
         font-family: Georgia, serif;
+    }
+    .dna-hero-tagline {
+        font-size: 20px;
+        color: #D9F2FF;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
     }
     .dna-hero-subtitle {
         font-size: 33px;
@@ -162,6 +172,38 @@ st.markdown("""
     .section-card-2 { border-left-color: #66b6ea; }
     .section-card-3 { border-left-color: #2f87d4; }
     .section-card-4 { border-left-color: #94c9f0; }
+
+    .feature-panel {
+        background: linear-gradient(145deg, rgba(8, 44, 82, 0.95) 0%, rgba(9, 36, 70, 0.95) 100%);
+        border: 1px solid rgba(120, 188, 238, 0.45);
+        border-left: 6px solid #00CFFF;
+        border-radius: 12px;
+        padding: 14px 16px;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    }
+    .feature-title {
+        color: #BFE9FF;
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+    }
+    .feature-item {
+        color: #E9F8FF;
+        margin: 8px 0;
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.85;
+        animation: keywordPulse 1.8s ease-in-out infinite;
+    }
+    .feature-item:nth-child(2) { animation-delay: 0.2s; }
+    .feature-item:nth-child(3) { animation-delay: 0.4s; }
+    .feature-item:nth-child(4) { animation-delay: 0.6s; }
+    .feature-item:nth-child(5) { animation-delay: 0.8s; }
+    @keyframes keywordPulse {
+        0% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
+        50% { opacity: 1; transform: translateX(3px); text-shadow: 0 0 10px rgba(0,207,255,0.55); }
+        100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -325,7 +367,7 @@ def get_home_logo_markup():
             encoded = base64.b64encode(img_file.read()).decode("utf-8")
         return (
             f'<img src="data:image/png;base64,{encoded}" alt="PCOS Logo" '
-            'style="width:64px;height:auto;display:block;" />'
+            'style="width:96px;height:auto;display:block;" />'
         )
     return PCOS_LOGO_SVG
 
@@ -362,8 +404,7 @@ if app_mode == "Home":
         <div class="dna-hero-content">
             <div class="home-logo-wrap">{get_home_logo_markup()}</div>
             <div class="dna-hero-title">AI Powered PCOS Detection</div>
-            <div class="dna-hero-subtitle">Healthcare</div>
-            <div class="dna-hero-small">Medical Presentation</div>
+            <div class="dna-hero-tagline">Empowering every woman to take charge of her reproductive health.</div>
             <div class="dna-hero-desc">
                 An intelligent screening system for Polycystic Ovary Syndrome using clinical parameters,
                 machine learning, and evidence-based diagnostics — accessible to everyone.
@@ -372,42 +413,43 @@ if app_mode == "Home":
     </div>
     """, unsafe_allow_html=True)
     
-    col1, col2 = st.columns([1, 1])
+    st.markdown('<div class="info-box"><h3>About This System</h3>', unsafe_allow_html=True)
+    st.markdown("""
+    This AI-powered system detects **Polycystic Ovary Syndrome (PCOS)** using:
+    - Machine Learning (XGBoost)
+    - Clinical Parameters Analysis
+    - Physical & Hormonal Data
     
-    with col1:
-        st.markdown('<div class="info-box"><h3>About This System</h3>', unsafe_allow_html=True)
-        st.markdown("""
-        This AI-powered system detects **Polycystic Ovary Syndrome (PCOS)** using:
-        - Machine Learning (XGBoost)
-        - Clinical Parameters Analysis
-        - Physical & Hormonal Data
-        
-        The system achieves **high accuracy** in early PCOS detection, enabling timely intervention and treatment.
-        
-        **For Social Good:** This technology democratizes PCOS detection for underserved communities with limited access to specialized healthcare.
-        </div>
-        """, unsafe_allow_html=True)
+    The system achieves **high accuracy** in early PCOS detection, enabling timely intervention and treatment.
     
-    with col2:
-        st.markdown('<div class="success-box"><h3>Key Features</h3>', unsafe_allow_html=True)
-        st.markdown("""
-        1. **Non-Invasive Detection** - Uses only clinical parameters
-        2. **Fast Results** - Instant diagnosis prediction
-        3. **Data Privacy** - All processing happens locally
-        4. **Accessible** - Web-based interface for ease of use
-        5. **Evidence-Based** - Trained on clinical dataset
-        6. **Interpretable** - Shows key factors in diagnosis
-        """, unsafe_allow_html=True)
+    **For Social Good:** This technology democratizes PCOS detection for underserved communities with limited access to specialized healthcare.
+    </div>
+    """, unsafe_allow_html=True)
 
-    home_banner_path = get_home_banner_image_path()
-    if home_banner_path:
-        st.image(home_banner_path, width=500)
-    else:
-        st.warning(
-            "Custom home image not found. Add one of: "
-            "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
+    img_col, feature_col = st.columns([3, 2])
+    with img_col:
+        home_banner_path = get_home_banner_image_path()
+        if home_banner_path:
+            st.image(home_banner_path, width=500)
+        else:
+            st.warning(
+                "Custom home image not found. Add one of: "
+                "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
+            )
+            st.image(create_metric_banner_image(), width=500)
+    with feature_col:
+        st.markdown(
+            """
+            <div class="feature-panel">
+                <div class="feature-title">Key Features</div>
+                <div class="feature-item">✓ Non-Invasive Screening</div>
+                <div class="feature-item">✓ Fast AI Results</div>
+                <div class="feature-item">✓ Privacy Protected</div>
+                <div class="feature-item">✓ Evidence-Based Insights</div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
-        st.image(create_metric_banner_image(), width=500)
     
     st.markdown("---")
     st.markdown("### System Statistics")
