@@ -2,6 +2,7 @@
 import pandas as pd
 import pickle
 import os
+import base64
 from PIL import Image, ImageDraw
 import time
 import warnings
@@ -315,6 +316,19 @@ def get_home_banner_image_path():
             return abs_path
     return None
 
+
+def get_home_logo_markup():
+    """Return tiny logo image markup if available, else fallback SVG."""
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as img_file:
+            encoded = base64.b64encode(img_file.read()).decode("utf-8")
+        return (
+            f'<img src="data:image/png;base64,{encoded}" alt="PCOS Logo" '
+            'style="width:26px;height:auto;display:block;" />'
+        )
+    return PCOS_LOGO_SVG
+
 def create_metric_banner_image():
     """Create a banner inspired by the awareness reference image."""
     img = Image.new("RGB", (1100, 420), "#F5F8FA")
@@ -346,7 +360,7 @@ if app_mode == "Home":
         <div class="dna-frame"></div>
         <div class="dna-svg-wrap">{DNA_HERO_SVG}</div>
         <div class="dna-hero-content">
-            <div class="home-logo-wrap">{PCOS_LOGO_SVG}</div>
+            <div class="home-logo-wrap">{get_home_logo_markup()}</div>
             <div class="dna-hero-title">PCOS Detection AI</div>
             <div class="dna-hero-subtitle">Healthcare</div>
             <div class="dna-hero-small">Medical Presentation</div>
