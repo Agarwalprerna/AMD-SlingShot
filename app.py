@@ -110,10 +110,6 @@ st.markdown("""
         color: #0B1F3A;
         letter-spacing: 3px;
         text-shadow: none;
-        background: #FFFFFF;
-        border-radius: 10px;
-        padding: 4px 14px;
-        display: inline-block;
         margin-bottom: 2px;
         font-family: Georgia, serif;
     }
@@ -173,12 +169,54 @@ st.markdown("""
     .section-card-3 { border-left-color: #2f87d4; }
     .section-card-4 { border-left-color: #94c9f0; }
 
+    .page-hero {
+        position: relative;
+        width: 100%;
+        min-height: 170px;
+        border-radius: 16px;
+        overflow: hidden;
+        margin: 8px 0 22px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image:
+            linear-gradient(rgba(4, 38, 82, 0.60), rgba(4, 38, 82, 0.60)),
+            radial-gradient(circle at 18% 35%, rgba(52, 174, 240, 0.35), transparent 35%),
+            radial-gradient(circle at 75% 60%, rgba(35, 130, 210, 0.35), transparent 42%),
+            linear-gradient(135deg, #06346a 0%, #0c4f95 35%, #0b3d82 65%, #0a2e65 100%);
+        box-shadow: 0 8px 28px rgba(0,80,200,0.35);
+    }
+    .page-hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 28px 16px;
+    }
+    .page-hero-title {
+        font-size: 48px;
+        font-weight: 900;
+        color: #0B1F3A;
+        letter-spacing: 1px;
+        margin: 0;
+        font-family: Georgia, serif;
+    }
+    .page-hero-subtitle {
+        color: #E9F6FF;
+        font-size: 18px;
+        margin-top: 8px;
+        font-weight: 600;
+    }
+
     .feature-panel {
         background: linear-gradient(145deg, rgba(8, 44, 82, 0.95) 0%, rgba(9, 36, 70, 0.95) 100%);
         border: 1px solid rgba(120, 188, 238, 0.45);
         border-left: 6px solid #00CFFF;
         border-radius: 12px;
         padding: 14px 16px;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
     }
     .feature-title {
@@ -360,16 +398,35 @@ def get_home_banner_image_path():
 
 
 def get_home_logo_markup():
-    """Return tiny logo image markup if available, else fallback SVG."""
+    """Return circular home logo markup if available, else fallback SVG."""
     logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as img_file:
             encoded = base64.b64encode(img_file.read()).decode("utf-8")
         return (
             f'<img src="data:image/png;base64,{encoded}" alt="PCOS Logo" '
-            'style="width:96px;height:auto;display:block;" />'
+            'style="width:140px;height:140px;border-radius:50%;object-fit:cover;display:block;'
+            'border:3px solid #bfe9ff;box-shadow:0 4px 14px rgba(0,0,0,0.35);" />'
         )
     return PCOS_LOGO_SVG
+
+
+def render_page_hero(title, subtitle=""):
+    subtitle_html = f'<div class="page-hero-subtitle">{subtitle}</div>' if subtitle else ""
+    st.markdown(
+        f"""
+        <div class="page-hero">
+            <div class="dna-dots"></div>
+            <div class="dna-frame"></div>
+            <div class="dna-svg-wrap">{DNA_HERO_SVG}</div>
+            <div class="page-hero-content">
+                <div class="page-hero-title">{title}</div>
+                {subtitle_html}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 def create_metric_banner_image():
     """Create a banner inspired by the awareness reference image."""
@@ -426,17 +483,17 @@ if app_mode == "Home":
     </div>
     """, unsafe_allow_html=True)
 
-    img_col, feature_col = st.columns([3, 2])
+    img_col, feature_col = st.columns([1, 1], vertical_alignment="top")
     with img_col:
         home_banner_path = get_home_banner_image_path()
         if home_banner_path:
-            st.image(home_banner_path, width=500)
+            st.image(home_banner_path, width=400)
         else:
             st.warning(
                 "Custom home image not found. Add one of: "
                 "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
             )
-            st.image(create_metric_banner_image(), width=500)
+            st.image(create_metric_banner_image(), width=400)
     with feature_col:
         st.markdown(
             """
@@ -468,7 +525,10 @@ if app_mode == "Home":
 
 # CLINICAL PARAMETERS ANALYSIS
 elif app_mode == "Clinical Parameters Analysis":
-    st.markdown('<div class="header-style">Clinical Parameters Analysis</div>', unsafe_allow_html=True)
+    render_page_hero(
+        "Clinical Parameters Analysis",
+        "Enter patient details for AI-powered screening."
+    )
     st.markdown("---")
     if not model_loaded:
         st.error("Model could not be loaded. Please ensure the training data is available.")
@@ -635,7 +695,10 @@ elif app_mode == "Clinical Parameters Analysis":
 
 # ABOUT PCOS
 elif app_mode == "About PCOS":
-    st.markdown('<div class="header-style">About PCOS</div>', unsafe_allow_html=True)
+    render_page_hero(
+        "About PCOS",
+        "Understand symptoms, risks, diagnosis, and early care."
+    )
     st.markdown("---")
     
     st.markdown("""
@@ -713,21 +776,10 @@ elif app_mode == "About PCOS":
 
 # HOW TO USE
 elif app_mode == "How to Use":
-    st.markdown(f"""
-    <div class="dna-hero">
-        <div class="dna-dots"></div>
-        <div class="dna-frame"></div>
-        <div class="dna-svg-wrap">{DNA_HERO_SVG}</div>
-        <div class="dna-hero-content">
-            <div class="dna-hero-title">How To Use</div>
-            <div class="dna-hero-subtitle">Step-by-Step Guide &nbsp;|&nbsp; PCOS Screening System</div>
-            <div class="dna-hero-desc">
-                Follow the guided steps below to enter patient data and receive an AI-powered
-                PCOS risk assessment. No medical background required.
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    render_page_hero(
+        "How To Use",
+        "Step-by-Step Guide | PCOS Screening System"
+    )
 
     steps = [
         {
