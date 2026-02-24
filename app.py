@@ -325,7 +325,7 @@ def get_home_logo_markup():
             encoded = base64.b64encode(img_file.read()).decode("utf-8")
         return (
             f'<img src="data:image/png;base64,{encoded}" alt="PCOS Logo" '
-            'style="width:26px;height:auto;display:block;" />'
+            'style="width:64px;height:auto;display:block;" />'
         )
     return PCOS_LOGO_SVG
 
@@ -361,7 +361,7 @@ if app_mode == "Home":
         <div class="dna-svg-wrap">{DNA_HERO_SVG}</div>
         <div class="dna-hero-content">
             <div class="home-logo-wrap">{get_home_logo_markup()}</div>
-            <div class="dna-hero-title">PCOS Detection AI</div>
+            <div class="dna-hero-title">AI Powered PCOS Detection</div>
             <div class="dna-hero-subtitle">Healthcare</div>
             <div class="dna-hero-small">Medical Presentation</div>
             <div class="dna-hero-desc">
