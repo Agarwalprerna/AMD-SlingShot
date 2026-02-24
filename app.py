@@ -387,13 +387,13 @@ if app_mode == "Home":
 
     home_banner_path = get_home_banner_image_path()
     if home_banner_path:
-        st.image(home_banner_path, width=700)
+        st.image(home_banner_path, width=500)
     else:
         st.warning(
             "Custom home image not found. Add one of: "
             "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
         )
-        st.image(create_metric_banner_image(), width=700)
+        st.image(create_metric_banner_image(), width=500)
     
     st.markdown("---")
     st.markdown("### System Statistics")
