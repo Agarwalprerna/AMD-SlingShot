@@ -299,6 +299,7 @@ def load_or_create_model():
 
 # Load model
 model, model_loaded = load_or_create_model()
+HOME_BANNER_IMAGE_PATH = "assets/home-banner.jpg"
 
 def create_metric_banner_image():
     """Create a banner inspired by the awareness reference image."""
@@ -370,7 +371,10 @@ if app_mode == "Home":
         6. **Interpretable** - Shows key factors in diagnosis
         """, unsafe_allow_html=True)
 
-    st.image(create_metric_banner_image(), use_container_width=True)
+    if os.path.exists(HOME_BANNER_IMAGE_PATH):
+        st.image(HOME_BANNER_IMAGE_PATH, use_container_width=True)
+    else:
+        st.image(create_metric_banner_image(), use_container_width=True)
     
     st.markdown("---")
     st.markdown("### System Statistics")
