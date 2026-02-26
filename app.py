@@ -42,6 +42,20 @@ st.markdown("""
         backdrop-filter: blur(6px);
     }
     .info-box h3 { color: #00CFFF; }
+    .howto-step {
+        padding: 10px 12px;
+        margin: 8px 0;
+        border-left-width: 4px;
+    }
+    .howto-step h3 {
+        font-size: 18px;
+        margin: 0 0 4px 0;
+    }
+    .howto-step p {
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.5;
+    }
     .warning-box {
         background-color: rgba(255,80,80,0.15);
         padding: 15px;
@@ -761,11 +775,10 @@ elif app_mode == "How to Use":
         },
     ]
 
-    st.markdown("### Steps Overview")
     for s in steps:
         st.markdown(
             f"""
-            <div class="info-box">
+            <div class="info-box howto-step">
                 <h3>{s['title']}</h3>
                 <p>{s['text']}</p>
             </div>
