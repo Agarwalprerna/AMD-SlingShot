@@ -783,45 +783,33 @@ elif app_mode == "How to Use":
 
     steps = [
         {
-            "title": "Step 1: Gather Basic Information",
+            "title": "Step 1: Gather Clinical Data",
             "text": (
-                "Keep it simple. Collect age, height, weight, waist, hip, and pulse. "
-                "Also keep symptom notes like acne, hair growth, and cycle changes."
+                "Collect patient clinical history and all available reports before entering values."
             )
         },
         {
-            "title": "Step 2: Add Hormonal and Biochemical Values",
+            "title": "Step 2: Fill the Parameters",
             "text": (
-                "Enter available test values: FSH, LH, AMH, testosterone, insulin, and RBS. "
-                "If you do not have a value, keep the default."
+                "Enter physical, biochemical, and clinical parameters in the input form."
             )
         },
         {
-            "title": "Step 3: Fill Clinical and Lifestyle Section",
+            "title": "Step 3: Upload Ultrasound Images",
             "text": (
-                "Choose Yes or No for acne, excess hair growth, skin darkening, pimples, "
-                "fast food, and regular exercise."
+                "Upload ultrasound images and add follicle details where available."
             )
         },
         {
-            "title": "Step 4: Upload Ultrasound Images",
+            "title": "Step 4: Run AI Analysis",
             "text": (
-                "Upload ultrasound image files if available. You can also enter follicle count "
-                "for left and right ovary."
+                "Click Analyze to run the AI model on the entered data."
             )
         },
         {
-            "title": "Step 5: Run Analysis",
+            "title": "Step 5: Review Results",
             "text": (
-                "Click Analyze Patient. The tool shows risk score, confidence, and simple "
-                "next-step suggestions."
-            )
-        },
-        {
-            "title": "Step 6: Read Result Carefully",
-            "text": (
-                "This is a screening tool, not a final diagnosis. Share the result with a "
-                "qualified gynecologist for confirmation."
+                "Review risk score, confidence, and suggested next steps."
             )
         },
     ]
