@@ -175,15 +175,14 @@ st.markdown("""
     .section-card {
         background: linear-gradient(145deg, #0b2f57 0%, #0a2545 100%);
         border: 1px solid rgba(120, 188, 238, 0.45);
-        border-left: 6px solid #3da3e3;
         border-radius: 12px;
         padding: 14px 14px 8px 14px;
         margin: 14px 0;
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
     }
-    .section-card-2 { border-left-color: #66b6ea; }
-    .section-card-3 { border-left-color: #2f87d4; }
-    .section-card-4 { border-left-color: #94c9f0; }
+    .section-card-2 { }
+    .section-card-3 { }
+    .section-card-4 { }
 
     .page-hero {
         position: relative;
