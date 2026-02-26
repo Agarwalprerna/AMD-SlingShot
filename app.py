@@ -194,7 +194,7 @@ st.markdown("""
     .page-hero-title {
         font-size: 48px;
         font-weight: 900;
-        color: #0B1F3A;
+        color: #FFFFFF;
         letter-spacing: 1px;
         margin: 0;
         font-family: Georgia, serif;
@@ -525,7 +525,7 @@ if app_mode == "Home":
 # CLINICAL PARAMETERS ANALYSIS
 elif app_mode == "Clinical Parameters Analysis":
     render_page_hero(
-        "Clinical Parameters Analysis",
+        "<span style='color:#FFFFFF;'>Clinical Parameters Analysis</span>",
         "Enter patient details for AI-powered screening."
     )
     st.markdown("---")
@@ -695,7 +695,7 @@ elif app_mode == "Clinical Parameters Analysis":
 # ABOUT PCOS
 elif app_mode == "About PCOS":
     render_page_hero(
-        "About PCOS",
+        "<span style='color:#FFFFFF;'>About PCOS</span>",
         "Understand symptoms, risks, diagnosis, and early care."
     )
     st.markdown("---")
@@ -776,7 +776,7 @@ elif app_mode == "About PCOS":
 # HOW TO USE
 elif app_mode == "How to Use":
     render_page_hero(
-        "How To Use",
+        "<span style='color:#FFFFFF;'>How To Use</span>",
         "Step-by-Step Guide | PCOS Screening System"
     )
 
