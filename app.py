@@ -718,7 +718,7 @@ elif app_mode == "About PCOS":
             about_pcos_image_path = abs_path
             break
     if about_pcos_image_path:
-        st.image(about_pcos_image_path, use_container_width=True)
+        st.image(about_pcos_image_path, width=700)
 
 
 # HOW TO USE
