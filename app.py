@@ -699,77 +699,12 @@ elif app_mode == "About PCOS":
         "Understand symptoms, risks, diagnosis, and early care."
     )
     st.markdown("---")
-    
     st.markdown("""
-    ## What is PCOS?
-    
-    **Polycystic Ovary Syndrome (PCOS)** is a common endocrine disorder that affects reproductive-aged women. 
-    It is characterized by:
-    
-    - **Irregular periods** - Unpredictable menstrual cycles
-    - **Elevated androgens** - Excess male hormones
-    - **Polycystic ovaries** - Multiple small follicles on ovaries
-    - **Metabolic dysfunction** - Insulin resistance in 50-70% of cases
-    
-    ### Key Statistics
-    - **Prevalence:** 6-20% of reproductive-aged women worldwide
-    - **Age of onset:** Typically 20-40 years
-    - **Impact:** Leading cause of infertility in women
-    - **Comorbidities:** Increased risk of diabetes, heart disease, and endometrial cancer
-    
-    ### Common Symptoms
-    """)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("""
-        **Physical Symptoms:**
-        - Irregular or missed periods
-        - Excessive hair growth (hirsutism)
-        - Acne
-        - Hair loss
-        - Dark skin patches
-        - Weight gain or difficulty losing weight
-        """)
-    
-    with col2:
-        st.markdown("""
-        **Metabolic Issues:**
-        - Insulin resistance
-        - High blood pressure
-        - Elevated cholesterol
-        - Risk of type 2 diabetes
-        - Metabolic syndrome
-        """)
-    
-    st.markdown("---")
-    st.markdown("""
-    ### Diagnostic Criteria (Rotterdam Criteria)
-    
-    PCOS is diagnosed if at least 2 of 3 criteria are present:
-    
-    1. **Ovulatory dysfunction** - Irregular or absent periods
-    2. **Clinical or biochemical hyperandrogenism** - Elevated testosterone or visual symptoms
-    3. **Polycystic ovaries** - Ultrasound findings (>=12 follicles per ovary)
-    
-    Other causes of hyperandrogenism must be excluded.
-    
-    ### Treatment & Management
-    
-    - **Lifestyle modifications:** Diet, exercise, weight management
-    - **Medications:** Metformin, hormonal contraceptives, anti-androgens
-    - **Fertility treatment:** For patients desiring pregnancy
-    - **Regular monitoring:** Glucose, lipids, blood pressure
-    
-    ### Why Early Detection Matters
-    
-    Early detection enables:
-    - Timely intervention and treatment
-    - Prevention of complications
-    - Better fertility outcomes
-    - Improved quality of life
-    - Reduced long-term health risks
+    ## Understanding PCOS
+
+    Polycystic Ovary Syndrome is a complex hormonal condition affecting millions of women worldwide.
+    Polycystic Ovary Syndrome (PCOS) is a common endocrine disorder that affects reproductive-aged women.
+    It is characterized by hormonal imbalances, irregular menstrual cycles, and the presence of small cysts on the ovaries.
     """)
 
 
