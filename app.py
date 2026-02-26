@@ -706,6 +706,19 @@ elif app_mode == "About PCOS":
     Polycystic Ovary Syndrome (PCOS) is a common endocrine disorder that affects reproductive-aged women.
     It is characterized by hormonal imbalances, irregular menstrual cycles, and the presence of small cysts on the ovaries.
     """)
+    about_pcos_image_candidates = [
+        "assets/AboutPCOS.png",
+        "assets/ABoutPCOS.png",
+        "assets/aboutpcos.png",
+    ]
+    about_pcos_image_path = None
+    for rel_path in about_pcos_image_candidates:
+        abs_path = os.path.join(BASE_DIR, rel_path)
+        if os.path.exists(abs_path):
+            about_pcos_image_path = abs_path
+            break
+    if about_pcos_image_path:
+        st.image(about_pcos_image_path, use_container_width=True)
 
 
 # HOW TO USE
