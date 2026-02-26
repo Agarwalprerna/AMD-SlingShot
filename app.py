@@ -43,9 +43,12 @@ st.markdown("""
     }
     .info-box h3 { color: #00CFFF; }
     .howto-step {
+        background: linear-gradient(135deg, rgba(10, 54, 104, 0.92) 0%, rgba(16, 92, 165, 0.85) 55%, rgba(7, 43, 88, 0.92) 100%);
         padding: 10px 12px;
         margin: 8px 0;
         border-left-width: 4px;
+        border: 1px solid rgba(120, 188, 238, 0.45);
+        box-shadow: 0 6px 14px rgba(0, 45, 95, 0.35);
     }
     .howto-step h3 {
         font-size: 18px;
