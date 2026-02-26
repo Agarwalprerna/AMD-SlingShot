@@ -4,7 +4,6 @@ import pickle
 import os
 import base64
 from PIL import Image, ImageDraw
-import time
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -107,7 +106,7 @@ st.markdown("""
     .dna-hero-title {
         font-size: 72px;
         font-weight: 900;
-        color: #0B1F3A;
+        color: #FFFFFF;
         letter-spacing: 3px;
         text-shadow: none;
         margin-bottom: 2px;
@@ -814,14 +813,6 @@ elif app_mode == "How to Use":
         },
     ]
 
-    st.markdown("### Auto-Play (1 second per step)")
-    if st.button("Play 1s Animation", use_container_width=True):
-        placeholder = st.empty()
-        rendered = []
-        for idx, s in enumerate(steps):
-            rendered.append(f"""<div class="info-box"><h3>{s['title']}</h3><p>{s['text']}</p></div>""")
-            placeholder.markdown("\n\n".join(rendered), unsafe_allow_html=True)
-            time.sleep(1)
     st.markdown("### Steps Overview")
     for s in steps:
         st.markdown(
