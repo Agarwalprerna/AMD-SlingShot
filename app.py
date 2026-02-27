@@ -278,6 +278,77 @@ st.markdown("""
         50% { opacity: 1; transform: translateX(3px); text-shadow: 0 0 10px rgba(0,207,255,0.55); }
         100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
     }
+    .home-visual-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0;
+        margin: 8px 0 12px 0;
+    }
+    .home-banner-pane img {
+        width: 480px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid rgba(120, 188, 238, 0.45);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+        display: block;
+    }
+    .home-logo-zone {
+        position: relative;
+        margin-left: -2px;
+        width: 420px;
+        min-height: 320px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .home-logo-semicircle {
+        width: 210px;
+        height: 210px;
+        border-radius: 0 210px 210px 0;
+        overflow: hidden;
+        border: 3px solid #bfe9ff;
+        border-left: 0;
+        background: linear-gradient(135deg, #0e4f95 0%, #1e6fc3 100%);
+        box-shadow: 0 8px 20px rgba(0, 30, 68, 0.35);
+        position: relative;
+        z-index: 2;
+    }
+    .home-logo-semicircle img {
+        width: 210px;
+        height: 210px;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+    }
+    .home-ladder-item {
+        position: absolute;
+        left: 200px;
+        background: rgba(16, 88, 166, 0.94);
+        color: #E9F8FF;
+        border: 1px solid rgba(120, 188, 238, 0.45);
+        border-left: 5px solid #00CFFF;
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 15px;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    }
+    .home-ladder-1 { top: 24px; }
+    .home-ladder-2 { top: 84px; left: 224px; }
+    .home-ladder-3 { top: 146px; left: 248px; }
+    .home-ladder-4 { top: 208px; left: 272px; }
+    @media (max-width: 1100px) {
+        .home-visual-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
+        .home-banner-pane img { width: 100%; height: auto; }
+        .home-logo-zone { margin-left: 0; width: 100%; min-height: 260px; justify-content: flex-start; }
+        .home-ladder-item { left: 220px; }
+        .home-ladder-2 { left: 236px; }
+        .home-ladder-3 { left: 252px; }
+        .home-ladder-4 { left: 268px; }
+    }
     .rotterdam-box {
         background: transparent;
         border: 1px solid rgba(95, 156, 235, 0.35);
@@ -447,6 +518,15 @@ def get_home_banner_image_path():
         if os.path.exists(abs_path):
             return abs_path
     return None
+
+
+def get_image_data_uri(path):
+    """Return image file as data URI."""
+    with open(path, "rb") as img_file:
+        encoded = base64.b64encode(img_file.read()).decode("utf-8")
+    ext = os.path.splitext(path)[1].lower().replace(".", "")
+    mime = "jpeg" if ext == "jpg" else ext
+    return f"data:image/{mime};base64,{encoded}"
 
 
 def _count_connected_components(binary_mask):
@@ -636,30 +716,39 @@ if app_mode == "Home":
         unsafe_allow_html=True
     )
     
-    img_col, feature_col = st.columns([1, 1], vertical_alignment="top")
-    with img_col:
-        home_banner_path = get_home_banner_image_path()
-        if home_banner_path:
-            st.image(home_banner_path, width=400)
-        else:
-            st.warning(
-                "Custom home image not found. Add one of: "
-                "assets/home-banner.jpg, assets/home-banner.jpeg, assets/home-banner.png"
-            )
-            st.image(create_metric_banner_image(), width=400)
-    with feature_col:
+    home_banner_path = get_home_banner_image_path()
+    logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
+    if home_banner_path and os.path.exists(logo_path):
+        banner_uri = get_image_data_uri(home_banner_path)
+        logo_uri = get_image_data_uri(logo_path)
         st.markdown(
-            """
-            <div class="feature-panel">
-                <div class="feature-title">Key Features of Our System</div>
-                <div class="feature-item">✓ Non-Invasive Screening</div>
-                <div class="feature-item">✓ Fast AI Results</div>
-                <div class="feature-item">✓ Privacy Protected</div>
-                <div class="feature-item">✓ Evidence-Based Insights</div>
+            f"""
+            <div class="home-visual-wrap">
+                <div class="home-banner-pane">
+                    <img src="{banner_uri}" alt="Home banner" />
+                </div>
+                <div class="home-logo-zone">
+                    <div class="home-logo-semicircle">
+                        <img src="{logo_uri}" alt="System logo" />
+                    </div>
+                    <div class="home-ladder-item home-ladder-1">01  Non-Invasive Screening</div>
+                    <div class="home-ladder-item home-ladder-2">02  Fast AI Results</div>
+                    <div class="home-ladder-item home-ladder-3">03  Privacy Protected</div>
+                    <div class="home-ladder-item home-ladder-4">04  Evidence-Based Insights</div>
+                </div>
             </div>
             """,
             unsafe_allow_html=True
         )
+    else:
+        st.warning(
+            "Required images not found for home visual layout. Add: "
+            "assets/home-banner.jpg (or .jpeg/.png) and assets/logo.png"
+        )
+        if home_banner_path:
+            st.image(home_banner_path, width=480)
+        else:
+            st.image(create_metric_banner_image(), width=480)
     
     st.markdown("---")
     st.markdown("### System Statistics")
