@@ -278,6 +278,51 @@ st.markdown("""
         50% { opacity: 1; transform: translateX(3px); text-shadow: 0 0 10px rgba(0,207,255,0.55); }
         100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
     }
+    .rotterdam-box {
+        background: linear-gradient(145deg, rgba(7, 24, 58, 0.98) 0%, rgba(5, 18, 46, 0.98) 100%);
+        border: 1px solid rgba(95, 156, 235, 0.5);
+        border-left: 6px solid #1f77b4;
+        border-radius: 12px;
+        padding: 22px 20px;
+        margin: 10px 0 16px 0;
+    }
+    .rotterdam-main-title {
+        color: #FFFFFF;
+        font-size: 30px;
+        font-weight: 800;
+        margin: 0 0 6px 0;
+    }
+    .rotterdam-desc {
+        color: #D5E8FF;
+        font-size: 18px;
+        margin: 0 0 18px 0;
+    }
+    .rotterdam-steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+    .rotterdam-step {
+        background: rgba(18, 58, 118, 0.45);
+        border: 1px solid rgba(115, 180, 255, 0.35);
+        border-radius: 10px;
+        padding: 14px;
+        min-height: 126px;
+    }
+    .rotterdam-step-num {
+        color: #F15A9A;
+        font-family: Georgia, serif;
+        font-size: 30px;
+        font-style: italic;
+        line-height: 1;
+        margin-bottom: 8px;
+    }
+    .rotterdam-step-text {
+        color: #FFFFFF;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1.25;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -564,6 +609,29 @@ if app_mode == "Home":
         </div>
     </div>
     """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div class="rotterdam-box">
+            <div class="rotterdam-main-title">According to Rotterdam Criteria:</div>
+            <p class="rotterdam-desc">PCOS diagnosis requires at least 2 of:</p>
+            <div class="rotterdam-steps">
+                <div class="rotterdam-step">
+                    <div class="rotterdam-step-num">01</div>
+                    <div class="rotterdam-step-text">Irregular ovulation</div>
+                </div>
+                <div class="rotterdam-step">
+                    <div class="rotterdam-step-num">02</div>
+                    <div class="rotterdam-step-text">Hyperandrogenism</div>
+                </div>
+                <div class="rotterdam-step">
+                    <div class="rotterdam-step-num">03</div>
+                    <div class="rotterdam-step-text">Polycystic ovaries on ultrasound.</div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
     
     img_col, feature_col = st.columns([1, 1], vertical_alignment="top")
     with img_col:
