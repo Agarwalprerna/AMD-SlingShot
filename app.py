@@ -673,9 +673,10 @@ elif app_mode == "Clinical Parameters Analysis":
         with st.container(border=True):
             st.markdown('<div class="section-title">Upload Ultrasound Images</div>', unsafe_allow_html=True)
             uploaded_usg = st.file_uploader(
-                "Upload ultrasound image(s) for automatic follicle counting",
+                " ",
                 type=["png", "jpg", "jpeg"],
-                accept_multiple_files=True
+                accept_multiple_files=True,
+                label_visibility="collapsed"
             )
             follicles_l, follicles_r = estimate_left_right_follicles(uploaded_usg) if uploaded_usg else (None, None)
             if uploaded_usg:
