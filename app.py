@@ -298,11 +298,11 @@ st.markdown("""
     .home-logo-zone {
         position: relative;
         margin-left: -8px;
-        width: 460px;
-        min-height: 320px;
+        width: 520px;
+        min-height: 360px;
         display: flex;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
     }
     .home-logo-semicircle {
         width: 210px;
@@ -323,41 +323,49 @@ st.markdown("""
         object-position: center;
         display: block;
     }
+    .home-logo-core {
+        position: absolute;
+        left: 130px;
+        top: 74px;
+    }
     .home-ladder-item {
         position: absolute;
         left: 235px;
         color: #0D2E53;
         padding: 0;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: 700;
         white-space: normal;
-        max-width: 220px;
+        max-width: 200px;
         line-height: 1.2;
+        text-align: left;
     }
     .home-features-title {
         position: absolute;
-        left: 235px;
+        left: 160px;
         top: 6px;
         color: #0A2342;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 800;
         line-height: 1.1;
-        max-width: 240px;
+        max-width: 250px;
+        text-align: center;
     }
-    .home-ladder-1 { top: 78px; }
-    .home-ladder-2 { top: 132px; left: 252px; }
-    .home-ladder-3 { top: 186px; left: 269px; }
-    .home-ladder-4 { top: 240px; left: 286px; }
+    .home-ladder-1 { top: 88px; left: 360px; }
+    .home-ladder-2 { top: 166px; left: 372px; }
+    .home-ladder-3 { top: 252px; left: 290px; }
+    .home-ladder-4 { top: 168px; left: 20px; text-align: right; }
     @media (max-width: 1100px) {
         .home-visual-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
         .home-banner-pane img { width: 100%; height: auto; }
-        .home-logo-zone { margin-left: 0; width: 100%; min-height: 320px; justify-content: flex-start; }
-        .home-features-title { left: 236px; top: 2px; font-size: 24px; }
-        .home-ladder-item { left: 236px; max-width: 250px; font-size: 18px; }
-        .home-ladder-1 { top: 66px; }
-        .home-ladder-2 { top: 116px; left: 248px; }
-        .home-ladder-3 { top: 166px; left: 260px; }
-        .home-ladder-4 { top: 216px; left: 272px; }
+        .home-logo-zone { margin-left: 0; width: 100%; min-height: 390px; justify-content: center; }
+        .home-logo-core { left: 95px; top: 92px; }
+        .home-features-title { left: 120px; top: 8px; font-size: 22px; max-width: 220px; }
+        .home-ladder-item { max-width: 180px; font-size: 16px; }
+        .home-ladder-1 { top: 112px; left: 315px; }
+        .home-ladder-2 { top: 176px; left: 326px; }
+        .home-ladder-3 { top: 246px; left: 265px; }
+        .home-ladder-4 { top: 184px; left: 8px; text-align: right; }
     }
     .rotterdam-box {
         background: transparent;
@@ -738,14 +746,16 @@ if app_mode == "Home":
                     <img src="{banner_uri}" alt="Home banner" />
                 </div>
                 <div class="home-logo-zone">
-                    <div class="home-logo-semicircle">
-                        <img src="{logo_uri}" alt="System logo" />
+                    <div class="home-logo-core">
+                        <div class="home-logo-semicircle">
+                            <img src="{logo_uri}" alt="System logo" />
+                        </div>
                     </div>
                     <div class="home-features-title">Key Features of Our System</div>
-                    <div class="home-ladder-item home-ladder-1">01  Non-Invasive Screening</div>
-                    <div class="home-ladder-item home-ladder-2">02  Fast AI Results</div>
-                    <div class="home-ladder-item home-ladder-3">03  Privacy Protected</div>
-                    <div class="home-ladder-item home-ladder-4">04  Evidence-Based Insights</div>
+                    <div class="home-ladder-item home-ladder-1">Non-Invasive Screening</div>
+                    <div class="home-ladder-item home-ladder-2">Fast AI Results</div>
+                    <div class="home-ladder-item home-ladder-3">Privacy Protected</div>
+                    <div class="home-ladder-item home-ladder-4">Evidence-Based Insights</div>
                 </div>
             </div>
             """,
