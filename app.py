@@ -60,21 +60,33 @@ st.markdown("""
         line-height: 1.5;
     }
     .warning-box {
-        background-color: rgba(255,80,80,0.15);
+        background: linear-gradient(135deg, rgba(107, 26, 26, 0.95) 0%, rgba(74, 16, 16, 0.95) 100%);
         padding: 15px;
         border-radius: 8px;
         margin: 10px 0px;
+        border: 1px solid rgba(255, 130, 130, 0.55);
         border-left: 5px solid #FF6B6B;
-        color: #FFE0E0;
+        color: #FFF1F1;
+        box-shadow: 0 8px 18px rgba(30, 8, 8, 0.45);
     }
     .success-box {
-        background-color: rgba(0,220,180,0.12);
+        background: linear-gradient(135deg, rgba(10, 73, 61, 0.95) 0%, rgba(8, 55, 46, 0.95) 100%);
         padding: 18px;
         border-radius: 10px;
         margin: 10px 0px;
+        border: 1px solid rgba(125, 238, 214, 0.45);
         border-left: 5px solid #00DEB0;
-        color: #D0FFF5;
+        color: #EFFFF9;
         backdrop-filter: blur(6px);
+        box-shadow: 0 8px 18px rgba(5, 30, 24, 0.45);
+    }
+    .warning-box h2, .success-box h2 {
+        color: #FFFFFF;
+        margin-bottom: 6px;
+    }
+    .warning-box p, .success-box p {
+        color: #FFFFFF;
+        margin-bottom: 0;
     }
     .success-box h3 { color: #00DEB0; }
 
