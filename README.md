@@ -159,14 +159,15 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 
 ## 📈 Model Performance
 
-### Cross-Validation Results (5-Fold)
-```
-Average Accuracy:  87.43% ± 2.15%
-Average Precision: 86.91% ± 2.89%
-Average Recall:    87.12% ± 1.98%
-Average F1-Score:  87.01% ± 2.10%
-Average ROC-AUC:   0.9125 ± 0.0234
-```
+### Training Results (5-Fold Nested Cross-Validation)
+
+#### 5-Fold Training Progress
+![5-Fold Training](assets/5fold%20training.png)
+
+#### Cross-Validation Results
+![Cross-Validation Results](assets/cross-validation%20results.png)
+
+
 
 ### Top 10 Most Important Features
 1. Insulin level
@@ -240,11 +241,7 @@ Contributions are welcome! Please:
 3. Make your changes
 4. Submit a pull request
 
-## 📝 License
-
-This project is licensed under the MIT License - see LICENSE file for details.
-
-## 📞 Contact & Support
+##  Contact & Support
 
 For issues, questions, or suggestions:
 - Open an issue on GitHub
