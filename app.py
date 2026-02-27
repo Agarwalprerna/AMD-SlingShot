@@ -828,8 +828,8 @@ elif app_mode == "Clinical Parameters Analysis":
                 lh = st.slider("LH (mIU/mL)", 1.0, 25.0, 8.0)
                 amh = st.slider("AMH (ng/mL)", 0.0, 15.0, 3.5)
             with col2:
-                testo = st.slider("Testosterone (ng/mL)", 0.0, 1.5, 0.5)
-                insulin = st.slider("Insulin (U/mL)", 0.0, 25.0, 5.0)
+                prl = st.slider("PRL (ng/mL)", 0.0, 50.0, 10.0)
+                prg = st.slider("PRG (ng/mL)", 0.0, 20.0, 1.0)
                 rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
 
         with st.container(border=True):
@@ -876,7 +876,8 @@ elif app_mode == "Clinical Parameters Analysis":
                 'Waist:Hip Ratio': waist_hip_ratio,
                 'FSH(mIU/mL)': fsh,
                 'LH(mIU/mL)': lh,
-                'Testosterone(ng/mL)': testo,
+                'PRL(ng/mL)': prl,
+                'PRG(ng/mL)': prg,
                 'AMH(ng/mL)': amh,
                 'Acne': acne,
                 'Hair growth(Y/N)': hair_growth,
@@ -887,7 +888,6 @@ elif app_mode == "Clinical Parameters Analysis":
                 'Follicle No. (L)': follicles_l,
                 'Follicle No. (R)': follicles_r,
                 'Pulse': pulse,
-                'Insulin(U/mL)': insulin,
                 'RBS(mg/dL)': rbs,
             }
             input_df = pd.DataFrame([patient_data])
