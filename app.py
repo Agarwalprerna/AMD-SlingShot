@@ -363,55 +363,23 @@ app_mode = st.sidebar.radio(
 # Helper function to load or create model
 @st.cache_resource
 def load_or_create_model():
-    """Load trained model or create a demo model if not available"""
+    """Load trained model bundle; train ExtraTrees model if missing."""
     model_path = "best_xgboost_model.pkl"
-    
+
     if os.path.exists(model_path):
         with open(model_path, 'rb') as f:
+            loaded_obj = pickle.load(f)
+        if isinstance(loaded_obj, dict) and "model" in loaded_obj and "imputer" in loaded_obj:
+            return loaded_obj, True
+
+    # Train using the project's updated training script for best available accuracy.
+    try:
+        from train_model import train_model
+        train_model(data_path="PCOS_data_without_infertility.xlsx", output_path=model_path)
+        with open(model_path, 'rb') as f:
             return pickle.load(f), True
-    else:
-        # Create a demo model with sample training
-        import xgboost as xgb
-        from sklearn.model_selection import train_test_split
-        
-        # Load and prepare data
-        data_path = "PCOS_data_without_infertility.xlsx"
-        if os.path.exists(data_path):
-            df = pd.read_excel(data_path)
-            
-            # Data preprocessing
-            df = df.drop(['Unnamed: 44'], axis=1) if 'Unnamed: 44' in df.columns else df
-            df['BMI'] = df['Weight (Kg)'] / (df['Height(Cm) '] / 100) ** 2
-            df = df.drop(['FSH/LH'], axis=1) if 'FSH/LH' in df.columns else df
-            df['Waist:Hip Ratio'] = df['Waist(inch)'] / df['Hip(inch)']
-            df.dropna(inplace=True)
-            df['II    beta-HCG(mIU/mL)'] = pd.to_numeric(df['II    beta-HCG(mIU/mL)'], errors='coerce')
-            df['AMH(ng/mL)'] = pd.to_numeric(df['AMH(ng/mL)'], errors='coerce')
-            df.dropna(inplace=True)
-            
-            y = df['PCOS (Y/N)']
-            X = df.drop(columns=['PCOS (Y/N)'])
-            
-            # Train model
-            xgb_model = xgb.XGBClassifier(
-                n_estimators=100,
-                max_depth=5,
-                learning_rate=0.1,
-                subsample=0.8,
-                colsample_bytree=0.8,
-                use_label_encoder=False,
-                eval_metric='logloss',
-                random_state=42
-            )
-            xgb_model.fit(X, y)
-            
-            # Save model
-            with open(model_path, 'wb') as f:
-                pickle.dump(xgb_model, f)
-            
-            return xgb_model, True
-        else:
-            return None, False
+    except Exception:
+        return None, False
 
 # Load model
 model, model_loaded = load_or_create_model()
@@ -587,7 +555,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 pulse = st.slider("Pulse (bpm)", 40, 120, 75)
 
         with st.container(border=True):
-            st.markdown('<div class="section-title">Hormonal & Biochemical</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Hormone and Biochemical from blood test report</div>', unsafe_allow_html=True)
             col1, col2 = st.columns(2)
             with col1:
                 fsh = st.slider("FSH (mIU/mL)", 1.0, 15.0, 6.5)
@@ -654,14 +622,26 @@ elif app_mode == "Clinical Parameters Analysis":
                 'RBS(mg/dL)': rbs,
             }
             input_df = pd.DataFrame([patient_data])
-            model_features = model.get_booster().feature_names
+            if isinstance(model, dict) and "model" in model:
+                estimator = model["model"]
+                imputer = model.get("imputer")
+                model_features = model.get("feature_names", list(input_df.columns))
+            else:
+                estimator = model
+                imputer = None
+                model_features = (
+                    estimator.get_booster().feature_names
+                    if hasattr(estimator, "get_booster")
+                    else list(input_df.columns)
+                )
             for feature in model_features:
                 if feature not in input_df.columns:
                     input_df[feature] = 0
             input_df = input_df[model_features]
+            prediction_input = imputer.transform(input_df) if imputer is not None else input_df
             try:
-                probability = model.predict_proba(input_df)[0]
-                prediction = model.predict(input_df)[0]
+                probability = estimator.predict_proba(prediction_input)[0]
+                prediction = estimator.predict(prediction_input)[0]
                 st.markdown("---")
                 st.markdown("### Analysis Results")
                 col1, col2 = st.columns(2)
