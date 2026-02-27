@@ -310,7 +310,7 @@ st.markdown("""
         min-height: 126px;
     }
     .rotterdam-step-num {
-        color: #F15A9A;
+        color: #D40000;
         font-family: Georgia, serif;
         font-size: 30px;
         font-style: italic;
@@ -667,7 +667,7 @@ if app_mode == "Home":
     with col2:
         st.metric("Model Features", "43", "Used internally by AI model")
     with col3:
-        st.metric("User Inputs", "16", "Simple form for non-doctors")
+        st.metric("User Inputs", "541", "Patient records")
     
     st.markdown("---")
     st.info("Ready to analyze? Select 'Clinical Parameters Analysis' from the sidebar to get started!")

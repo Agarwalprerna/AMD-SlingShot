@@ -1,201 +1,219 @@
 """
-PCOS Detection - Model Training Script (v2)
-Achieves 92%+ accuracy using ExtraTrees with feature engineering.
-Model: ExtraTreesClassifier (tuned via nested cross-validation)
+PCOS Detection - Model Training Script
+This script trains the XGBoost model on clinical parameters data
 """
 
 import pandas as pd
 import numpy as np
-from sklearn.ensemble import ExtraTreesClassifier, HistGradientBoostingClassifier, RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, cross_val_score, GridSearchCV
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import Pipeline
+import xgboost as xgb
+from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score
 import pickle
 from collections import Counter
-import warnings
-warnings.filterwarnings('ignore')
-
-
-def load_data(data_path='PCOS_data_without_infertility.xlsx'):
-    """Load data from the correct sheet."""
-    xls = pd.ExcelFile(data_path)
-    # Find sheet with clinical data
-    for sheet in xls.sheet_names:
-        try:
-            tmp = pd.read_excel(xls, sheet_name=sheet, nrows=3)
-            cols = ' '.join([str(c).lower() for c in tmp.columns])
-            if 'pcos' in cols and 'weight' in cols:
-                print(f"Using sheet: '{sheet}'")
-                return pd.read_excel(xls, sheet_name=sheet)
-        except Exception:
-            continue
-    # Fallback
-    return pd.read_excel(xls, sheet_name=xls.sheet_names[0])
-
 
 def preprocess_data(df):
-    """Clean, encode, and feature-engineer the dataset."""
-    # Drop non-informative columns
-    drop_cols = ['Sl. No', 'Patient File No.', 'Unnamed: 44', 'Cycle(R/I)', 'Blood Group', 'FSH/LH']
-    df = df.drop([c for c in drop_cols if c in df.columns], axis=1)
+    """Preprocess PCOS data"""
+    # helper to find a column by keyword substrings (case-insensitive)
+    def find_column(df, keywords):
+        for col in df.columns:
+            lc = col.lower()
+            for kw in keywords:
+                if kw in lc:
+                    return col
+        return None
 
-    # Convert all columns to numeric
-    for col in df.columns:
-        df[col] = pd.to_numeric(df[col], errors='coerce')
+    # Drop common junk column if present
+    if 'Unnamed: 44' in df.columns:
+        df = df.drop(['Unnamed: 44'], axis=1)
 
-    # Drop rows missing target
-    df = df.dropna(subset=['PCOS (Y/N)'])
+    # Locate weight and height columns (support variants)
+    weight_col = find_column(df, ['weight'])
+    height_col = find_column(df, ['height'])
+    if weight_col is None or height_col is None:
+        raise ValueError(f"Required columns for BMI not found. Available columns: {list(df.columns)}")
 
-    # --- Feature Engineering ---
-    # Hormonal ratios
-    if 'LH(mIU/mL)' in df.columns and 'FSH(mIU/mL)' in df.columns:
-        df['LH_FSH_ratio'] = df['LH(mIU/mL)'] / (df['FSH(mIU/mL)'] + 1e-6)
+    # Ensure numeric and compute BMI
+    df[weight_col] = pd.to_numeric(df[weight_col], errors='coerce')
+    df[height_col] = pd.to_numeric(df[height_col], errors='coerce')
+    df['BMI'] = df[weight_col] / (df[height_col] / 100) ** 2
 
-    # Follicle counts
-    if 'Follicle No. (L)' in df.columns and 'Follicle No. (R)' in df.columns:
-        df['Follicle_total'] = df['Follicle No. (L)'] + df['Follicle No. (R)']
-        df['Follicle_max'] = df[['Follicle No. (L)', 'Follicle No. (R)']].max(axis=1)
+    # Optionally drop 'FSH/LH' if present
+    if 'FSH/LH' in df.columns:
+        df = df.drop(['FSH/LH'], axis=1)
 
-    # Interaction terms
-    if 'BMI' in df.columns and 'Waist:Hip Ratio' in df.columns:
-        df['BMI_waist'] = df['BMI'] * df['Waist:Hip Ratio']
+    # Waist:Hip ratio
+    waist_col = find_column(df, ['waist'])
+    hip_col = find_column(df, ['hip'])
+    if waist_col is not None and hip_col is not None:
+        df[waist_col] = pd.to_numeric(df[waist_col], errors='coerce')
+        df[hip_col] = pd.to_numeric(df[hip_col], errors='coerce')
+        df['Waist:Hip Ratio'] = df[waist_col] / df[hip_col]
 
-    if 'AMH(ng/mL)' in df.columns:
-        if 'Follicle_total' in df.columns:
-            df['follicle_x_amh'] = df['Follicle_total'] * df['AMH(ng/mL)']
-        if 'LH(mIU/mL)' in df.columns:
-            df['amh_lh'] = df['AMH(ng/mL)'] * df['LH(mIU/mL)']
+    # Convert commonly named hormonal columns if present
+    beta_col = find_column(df, ['beta-hcg', 'beta hcg', 'beta', 'hcg'])
+    if beta_col is not None:
+        df[beta_col] = pd.to_numeric(df[beta_col], errors='coerce')
+
+    amh_col = find_column(df, ['amh'])
+    if amh_col is not None:
+        df[amh_col] = pd.to_numeric(df[amh_col], errors='coerce')
+
+    # Drop rows with NaN in critical columns
+    # Ensure target column exists
+    target_col = find_column(df, ['pcos'])
+    if target_col is None:
+        raise ValueError(f"Target column containing 'pcos' not found. Available columns: {list(df.columns)}")
+
+    df.dropna(inplace=True)
 
     return df
 
+def train_model(data_path='PCOS_data_without_infertility.xlsx', output_path='best_xgboost_model.pkl'):
+    """Train XGBoost model with nested cross-validation"""
+    
+    print("Loading data...")
+    # Auto-detect the sheet that contains clinical data (looks for keywords)
+    xls = pd.ExcelFile(data_path)
+    preferred_keywords = ['weight', 'pcos', 'age']
+    selected_sheet = None
+    for name in xls.sheet_names:
+        try:
+            tmp = pd.read_excel(xls, sheet_name=name, nrows=5)
+        except Exception:
+            continue
+        cols = ' '.join([str(c).lower() for c in tmp.columns])
+        if any(k in cols for k in preferred_keywords):
+            selected_sheet = name
+            break
 
-def train_model(data_path='PCOS_data_without_infertility.xlsx',
-                output_path='best_xgboost_model.pkl'):
-    """
-    Train ExtraTrees model with nested cross-validation.
-    Achieves ~92% accuracy and ~95.9% ROC-AUC.
-    """
-    print("=" * 60)
-    print("PCOS Detection - Model Training (ExtraTrees v2)")
-    print("=" * 60)
+    if selected_sheet is None:
+        selected_sheet = xls.sheet_names[0]
+        print(f"No sheet matched keywords; falling back to first sheet: {selected_sheet}")
+    else:
+        print(f"Using sheet: {selected_sheet}")
 
-    # Load & preprocess
-    print("\nLoading data...")
-    df = load_data(data_path)
-    print(f"Raw data: {df.shape}")
-
+    df = pd.read_excel(xls, sheet_name=selected_sheet)
+    
     print("Preprocessing data...")
     df = preprocess_data(df)
-
-    y = df['PCOS (Y/N)'].astype(int)
+    
+    # Prepare features and target
+    y = df['PCOS (Y/N)']
     X = df.drop(columns=['PCOS (Y/N)'])
 
-    print(f"Dataset: {X.shape[0]} samples, {X.shape[1]} features")
-    print(f"PCOS: {y.sum()} | Non-PCOS: {(y == 0).sum()}")
+    # Coerce non-numeric columns to numeric where possible (force numeric dtype for XGBoost)
+    for col in X.columns:
+        if X[col].dtype == object:
+            X[col] = pd.to_numeric(X[col], errors='coerce')
 
-    # Imputation (median strategy)
-    imp = SimpleImputer(strategy='median')
-    X_imp = pd.DataFrame(imp.fit_transform(X), columns=X.columns)
+    # Fill remaining NaNs with column median
+    X = X.fillna(X.median())
 
-    # --- Nested Cross-Validation ---
-    print("\n" + "=" * 60)
-    print("Running Nested Cross-Validation (5-Fold)")
-    print("=" * 60)
+    # Ensure target is numeric
+    y = pd.to_numeric(y, errors='coerce')
+    # Drop rows with missing target or features
+    valid_idx = y.dropna().index.intersection(X.dropna().index)
+    X = X.loc[valid_idx].reset_index(drop=True)
+    y = y.loc[valid_idx].astype(int).reset_index(drop=True)
 
-    outer_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    inner_cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
-
+    print(f"Dataset size: {len(X)} samples, {len(X.columns)} features")
+    print(f"PCOS cases: {(y == 1).sum()}, Non-PCOS cases: {(y == 0).sum()}")
+    
     # Hyperparameter grid
     param_grid = {
-        'n_estimators': [300, 500],
-        'min_samples_leaf': [2, 3, 5],
-        'max_features': ['sqrt', 0.5],
-        'max_depth': [None, 20]
+        'n_estimators': [50, 100, 200],
+        'max_depth': [3, 5, 7],
+        'learning_rate': [0.01, 0.1, 0.2],
+        'subsample': [0.8, 1.0],
+        'colsample_bytree': [0.8, 1.0]
     }
-
-    all_metrics = {'accuracy': [], 'precision': [], 'recall': [], 'f1': [], 'roc_auc': []}
+    
+    # Nested cross-validation
+    outer_cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     best_params_list = []
-
-    for fold, (train_idx, test_idx) in enumerate(outer_cv.split(X_imp, y), 1):
-        print(f"\nFold {fold}/5...")
-        X_train, X_test = X_imp.iloc[train_idx], X_imp.iloc[test_idx]
+    outer_scores = []
+    all_metrics = {'accuracy': [], 'precision': [], 'recall': [], 'f1': [], 'roc_auc': []}
+    
+    fold_num = 1
+    print("\nRunning nested cross-validation...")
+    
+    for train_idx, test_idx in outer_cv.split(X, y):
+        print(f"\nFold {fold_num}/5")
+        X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
-
-        base = ExtraTreesClassifier(random_state=42, n_jobs=-1)
-        grid = GridSearchCV(base, param_grid, cv=inner_cv, scoring='accuracy',
-                            n_jobs=-1, verbose=0)
-        grid.fit(X_train, y_train)
-
-        best_params_list.append(frozenset(grid.best_params_.items()))
-        best_est = grid.best_estimator_
-
-        y_pred = best_est.predict(X_test)
-        y_prob = best_est.predict_proba(X_test)[:, 1]
-
-        acc = accuracy_score(y_test, y_pred)
-        prec = precision_score(y_test, y_pred, zero_division=0)
-        rec = recall_score(y_test, y_pred, zero_division=0)
-        f1 = f1_score(y_test, y_pred, zero_division=0)
-        auc = roc_auc_score(y_test, y_prob)
-
-        all_metrics['accuracy'].append(acc)
-        all_metrics['precision'].append(prec)
-        all_metrics['recall'].append(rec)
+        
+        # Inner cross-validation for hyperparameter tuning
+        xgb_model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+        grid_search = GridSearchCV(xgb_model, param_grid, cv=3, scoring='accuracy', n_jobs=-1, verbose=0)
+        grid_search.fit(X_train, y_train)
+        
+        best_params_list.append(frozenset(grid_search.best_params_.items()))
+        
+        # Evaluate on outer test set
+        best_model = grid_search.best_estimator_
+        y_pred = best_model.predict(X_test)
+        y_pred_proba = best_model.predict_proba(X_test)[:, 1]
+        
+        accuracy = accuracy_score(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred)
+        roc_auc = roc_auc_score(y_test, y_pred_proba)
+        
+        all_metrics['accuracy'].append(accuracy)
+        all_metrics['precision'].append(precision)
+        all_metrics['recall'].append(recall)
         all_metrics['f1'].append(f1)
-        all_metrics['roc_auc'].append(auc)
-
-        print(f"  Acc={acc:.4f} | Prec={prec:.4f} | Rec={rec:.4f} | "
-              f"F1={f1:.4f} | ROC-AUC={auc:.4f}")
-
-    # Summary
-    print("\n" + "=" * 60)
+        all_metrics['roc_auc'].append(roc_auc)
+        
+        print(f"  Accuracy: {accuracy:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}, ROC-AUC: {roc_auc:.4f}")
+        outer_scores.append(accuracy)
+        fold_num += 1
+    
+    print("\n" + "="*60)
     print("CROSS-VALIDATION RESULTS")
-    print("=" * 60)
-    for metric, values in all_metrics.items():
-        arr = np.array(values)
-        print(f"  {metric.capitalize():12s}: {arr.mean():.4f} ± {arr.std():.4f}")
-
-    # --- Final Model Training ---
+    print("="*60)
+    print(f"Average Accuracy: {np.mean(all_metrics['accuracy']):.4f} (+/- {np.std(all_metrics['accuracy']):.4f})")
+    print(f"Average Precision: {np.mean(all_metrics['precision']):.4f} (+/- {np.std(all_metrics['precision']):.4f})")
+    print(f"Average Recall: {np.mean(all_metrics['recall']):.4f} (+/- {np.std(all_metrics['recall']):.4f})")
+    print(f"Average F1-Score: {np.mean(all_metrics['f1']):.4f} (+/- {np.std(all_metrics['f1']):.4f})")
+    print(f"Average ROC-AUC: {np.mean(all_metrics['roc_auc']):.4f} (+/- {np.std(all_metrics['roc_auc']):.4f})")
+    print("="*60)
+    
+    # Train final model on full dataset
     print("\nTraining final model on full dataset...")
-    most_common = Counter(best_params_list).most_common(1)[0][0]
-    final_params = dict(most_common)
-    print(f"Best hyperparameters: {final_params}")
-
-    final_model = ExtraTreesClassifier(
-        **final_params, random_state=42, n_jobs=-1
-    )
-    final_model.fit(X_imp, y)
-
-    # Feature importance
-    print("\nTop 15 Most Important Features:")
-    feat_imp = pd.DataFrame({
-        'Feature': X.columns,
-        'Importance': final_model.feature_importances_
-    }).sort_values('Importance', ascending=False)
-    print(feat_imp.head(15).to_string(index=False))
-
-    # Save model bundle (model + imputer + feature names)
-    save_obj = {
-        'model': final_model,
-        'imputer': imp,
-        'feature_names': list(X.columns),
-        'model_type': 'ExtraTreesClassifier',
-        'cv_accuracy': float(np.mean(all_metrics['accuracy'])),
-        'cv_roc_auc': float(np.mean(all_metrics['roc_auc']))
-    }
-
+    # Determine most common hyperparameters from CV; fall back to sensible defaults if empty
+    if len(best_params_list) == 0:
+        most_common_params = {
+            'n_estimators': 100,
+            'max_depth': 5,
+            'learning_rate': 0.1,
+            'subsample': 0.8,
+            'colsample_bytree': 0.8
+        }
+        print("Warning: no best params collected from CV; using defaults:", most_common_params)
+    else:
+        most_common = Counter(best_params_list).most_common(1)[0][0]
+        most_common_params = dict(most_common)
+        print(f"Best hyperparameters: {most_common_params}")
+    
+    final_model = xgb.XGBClassifier(**most_common_params, use_label_encoder=False, eval_metric='logloss', random_state=42)
+    final_model.fit(X, y)
+    
+    # Get feature importance
+    print("\nTop 20 Most Important Features:")
+    feature_importance = final_model.get_booster().get_score(importance_type='gain')
+    importance_df = pd.DataFrame(feature_importance.items(), columns=['Feature', 'Importance']).sort_values(by='Importance', ascending=False)
+    print(importance_df.head(20).to_string(index=False))
+    
+    # Save model
+    print(f"\nSaving model to {output_path}...")
     with open(output_path, 'wb') as f:
-        pickle.dump(save_obj, f)
-
-    print(f"\n✅ Model saved to '{output_path}'")
-    print(f"   CV Accuracy : {np.mean(all_metrics['accuracy']):.4f}")
-    print(f"   CV ROC-AUC  : {np.mean(all_metrics['roc_auc']):.4f}")
-
-    return final_model, feat_imp
-
+        pickle.dump(final_model, f)
+    
+    print("✅ Model training complete!")
+    
+    return final_model, importance_df
 
 if __name__ == "__main__":
     train_model()
