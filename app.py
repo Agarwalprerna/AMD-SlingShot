@@ -278,6 +278,75 @@ st.markdown("""
         50% { opacity: 1; transform: translateX(3px); text-shadow: 0 0 10px rgba(0,207,255,0.55); }
         100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
     }
+    .rotterdam-wrap {
+        background: #061437;
+        border-radius: 0;
+        padding: 18px 0 8px 0;
+        margin: 14px 0 16px 0;
+    }
+    .rotterdam-title {
+        display: inline-block;
+        background: #0b4fb4;
+        color: #FFFFFF;
+        font-family: Georgia, serif;
+        font-size: 52px;
+        font-weight: 700;
+        line-height: 1.05;
+        margin: 0 0 16px 0;
+        padding: 2px 10px 6px 8px;
+    }
+    .rotterdam-subtitle {
+        display: inline-block;
+        background: #0b4fb4;
+        color: #FFFFFF;
+        font-size: 40px;
+        font-weight: 500;
+        line-height: 1.15;
+        margin: 0 0 36px 0;
+        padding: 6px 10px;
+    }
+    .rotterdam-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 28px;
+    }
+    .rotterdam-item {
+        min-height: 190px;
+    }
+    .rotterdam-num {
+        font-family: Georgia, serif;
+        font-style: italic;
+        font-size: 66px;
+        color: #cf2c71;
+        line-height: 1;
+        margin-bottom: 14px;
+        display: inline-block;
+        padding: 0 2px;
+    }
+    .rotterdam-item:first-child .rotterdam-num {
+        background: #123f90;
+    }
+    .rotterdam-heading {
+        color: #FFFFFF;
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 1.1;
+        margin: 0 0 14px 0;
+    }
+    .rotterdam-text {
+        color: #9bb4da;
+        font-size: 35px;
+        line-height: 1.25;
+        margin: 0;
+    }
+    @media (max-width: 980px) {
+        .rotterdam-title { font-size: 34px; }
+        .rotterdam-subtitle { font-size: 22px; }
+        .rotterdam-grid { grid-template-columns: 1fr; gap: 16px; }
+        .rotterdam-num { font-size: 42px; }
+        .rotterdam-heading { font-size: 32px; }
+        .rotterdam-text { font-size: 22px; }
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -577,6 +646,29 @@ if app_mode == "Home":
     **For Social Good:** This technology democratizes PCOS detection for underserved communities with limited access to specialized healthcare.
     </div>
     """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <section class="rotterdam-wrap">
+            <div class="rotterdam-title">According to Rotterdem Criteria.</div><br />
+            <div class="rotterdam-subtitle">PCOS diagnosis requires at least 2 of:</div>
+            <div class="rotterdam-grid">
+                <div class="rotterdam-item">
+                    <div class="rotterdam-num">01</div>
+                    <h3 class="rotterdam-heading">Irregular ovulation</h3>
+                </div>
+                <div class="rotterdam-item">
+                    <div class="rotterdam-num">02</div>
+                    <h3 class="rotterdam-heading">Hyperandrogenism</h3>
+                </div>
+                <div class="rotterdam-item">
+                    <div class="rotterdam-num">03</div>
+                    <h3 class="rotterdam-heading">Polycystic ovaries on ultrasound</h3>
+                </div>
+            </div>
+        </section>
+        """,
+        unsafe_allow_html=True
+    )
     img_col, feature_col = st.columns([1, 1], vertical_alignment="top")
     with img_col:
         home_banner_path = get_home_banner_image_path()
