@@ -409,21 +409,24 @@ app_mode = st.sidebar.radio(
 # Helper function to load or create model
 @st.cache_resource
 def load_or_create_model():
-    """Load trained model bundle; train ExtraTrees model if missing."""
+    """Load trained XGBoost model; train one if missing."""
     model_path = "best_xgboost_model.pkl"
 
     if os.path.exists(model_path):
         with open(model_path, 'rb') as f:
             loaded_obj = pickle.load(f)
-        if isinstance(loaded_obj, dict) and "model" in loaded_obj and "imputer" in loaded_obj:
+        if hasattr(loaded_obj, "predict_proba") and hasattr(loaded_obj, "get_booster"):
             return loaded_obj, True
 
-    # Train using the project's updated training script for best available accuracy.
+    # Train and load XGBoost model if no valid model is found.
     try:
         from train_model import train_model
         train_model(data_path="PCOS_data_without_infertility.xlsx", output_path=model_path)
         with open(model_path, 'rb') as f:
-            return pickle.load(f), True
+            loaded_obj = pickle.load(f)
+        if hasattr(loaded_obj, "predict_proba") and hasattr(loaded_obj, "get_booster"):
+            return loaded_obj, True
+        return None, False
     except Exception:
         return None, False
 
@@ -772,26 +775,18 @@ elif app_mode == "Clinical Parameters Analysis":
                 'RBS(mg/dL)': rbs,
             }
             input_df = pd.DataFrame([patient_data])
-            if isinstance(model, dict) and "model" in model:
-                estimator = model["model"]
-                imputer = model.get("imputer")
-                model_features = model.get("feature_names", list(input_df.columns))
-            else:
-                estimator = model
-                imputer = None
-                model_features = (
-                    estimator.get_booster().feature_names
-                    if hasattr(estimator, "get_booster")
-                    else list(input_df.columns)
-                )
+            model_features = (
+                model.get_booster().feature_names
+                if hasattr(model, "get_booster")
+                else list(input_df.columns)
+            )
             for feature in model_features:
                 if feature not in input_df.columns:
                     input_df[feature] = 0
             input_df = input_df[model_features]
-            prediction_input = imputer.transform(input_df) if imputer is not None else input_df
             try:
-                probability = estimator.predict_proba(prediction_input)[0]
-                prediction = estimator.predict(prediction_input)[0]
+                probability = model.predict_proba(input_df)[0]
+                prediction = model.predict(input_df)[0]
                 st.markdown("---")
                 st.markdown("### Analysis Results")
                 col1, col2 = st.columns(2)
