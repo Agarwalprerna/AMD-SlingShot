@@ -1,2 +1,39 @@
- best_xgboost_model.pkl
- 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project-specific
+best_xgboost_model.pkl
+.streamlit/
+*.pkl
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Environment
+.env
+.env.local
+
+# Temporary files
+~$*.xlsx
+*.tmp
