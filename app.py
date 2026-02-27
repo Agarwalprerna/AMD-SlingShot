@@ -278,6 +278,58 @@ st.markdown("""
         50% { opacity: 1; transform: translateX(3px); text-shadow: 0 0 10px rgba(0,207,255,0.55); }
         100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
     }
+    .diagnostic-section {
+        padding: 60px 20px;
+        background-color: #f4f8fb;
+        display: flex;
+        justify-content: center;
+        border-radius: 12px;
+        margin: 16px 0 24px 0;
+    }
+    .diagnostic-card {
+        max-width: 900px;
+        background: white;
+        padding: 40px;
+        border-left: 6px solid #1f77b4;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .diagnostic-card h2 {
+        font-size: 28px;
+        color: #1f2d3d;
+        margin-bottom: 15px;
+    }
+    .subtitle {
+        color: #5c6b7a;
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+    .criteria-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+    .criterion {
+        background: #f9fcff;
+        padding: 25px;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+    .criterion:hover {
+        transform: translateY(-5px);
+    }
+    .criterion h3 {
+        margin-top: 10px;
+        font-size: 18px;
+        color: #1f77b4;
+    }
+    .criterion p {
+        font-size: 14px;
+        color: #4a5568;
+    }
+    .icon {
+        font-size: 28px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -577,6 +629,34 @@ if app_mode == "Home":
     **For Social Good:** This technology democratizes PCOS detection for underserved communities with limited access to specialized healthcare.
     </div>
     """, unsafe_allow_html=True)
+    st.markdown(
+        """
+        <section class="diagnostic-section">
+            <div class="diagnostic-card">
+                <h2>Diagnostic Criteria at a Glance</h2>
+                <p class="subtitle">The system evaluates PCOS risk using major clinical and biochemical indicators.</p>
+                <div class="criteria-grid">
+                    <div class="criterion">
+                        <div class="icon">01</div>
+                        <h3>Hormonal Profile</h3>
+                        <p>LH, FSH, AMH, and testosterone markers are used to capture endocrine imbalance patterns.</p>
+                    </div>
+                    <div class="criterion">
+                        <div class="icon">02</div>
+                        <h3>Body Metrics</h3>
+                        <p>BMI and waist-hip ratio provide obesity and metabolic-risk context linked to PCOS.</p>
+                    </div>
+                    <div class="criterion">
+                        <div class="icon">03</div>
+                        <h3>Clinical Signs</h3>
+                        <p>Acne, skin darkening, excess hair growth, and lifestyle indicators support screening confidence.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        """,
+        unsafe_allow_html=True
+    )
 
     img_col, feature_col = st.columns([1, 1], vertical_alignment="top")
     with img_col:
