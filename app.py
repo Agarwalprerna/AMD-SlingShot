@@ -678,7 +678,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 accept_multiple_files=True,
                 label_visibility="collapsed"
             )
-            follicles_l, follicles_r = estimate_left_right_follicles(uploaded_usg) if uploaded_usg else (None, None)
+            follicles_l, follicles_r = estimate_left_right_follicles(uploaded_usg) if uploaded_usg else (8, 8)
             if uploaded_usg:
                 st.caption(f"{len(uploaded_usg)} image(s) uploaded")
                 preview_cols = st.columns(min(3, len(uploaded_usg)))
@@ -690,11 +690,8 @@ elif app_mode == "Clinical Parameters Analysis":
                 if len(uploaded_usg) == 1:
                     st.caption("Only one image uploaded; same estimate used for both ovaries.")
             else:
-                st.info("Upload at least one ultrasound image to estimate follicle counts automatically.")
+                st.info("Ultrasound image is optional. Using default follicle counts for analysis if not uploaded.")
         if st.button("Analyze Patient", type="primary", use_container_width=True):
-            if follicles_l is None or follicles_r is None:
-                st.error("Please upload ultrasound image(s) so follicle counts can be estimated automatically.")
-                st.stop()
             patient_data = {
                 'Age': age,
                 'Height(Cm) ': height_cm,
