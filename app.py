@@ -342,7 +342,7 @@ st.markdown("""
         font-size: 28px;
         font-weight: 800;
         line-height: 1.1;
-        max-width: 240px;
+        white-space: nowrap;
     }
     .home-ladder-1 { top: 78px; }
     .home-ladder-2 { top: 132px; left: 252px; }
@@ -352,7 +352,7 @@ st.markdown("""
         .home-visual-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
         .home-banner-pane img { width: 100%; height: auto; }
         .home-logo-zone { margin-left: 0; width: 100%; min-height: 320px; justify-content: flex-start; }
-        .home-features-title { left: 236px; top: 2px; font-size: 24px; }
+        .home-features-title { left: 236px; top: 2px; font-size: 24px; white-space: nowrap; }
         .home-ladder-item { left: 236px; max-width: 250px; font-size: 18px; }
         .home-ladder-1 { top: 66px; }
         .home-ladder-2 { top: 116px; left: 248px; }
@@ -742,10 +742,10 @@ if app_mode == "Home":
                         <img src="{logo_uri}" alt="System logo" />
                     </div>
                     <div class="home-features-title">Key Features of Our System</div>
-                    <div class="home-ladder-item home-ladder-1">01  Non-Invasive Screening</div>
-                    <div class="home-ladder-item home-ladder-2">02  Fast AI Results</div>
-                    <div class="home-ladder-item home-ladder-3">03  Privacy Protected</div>
-                    <div class="home-ladder-item home-ladder-4">04  Evidence-Based Insights</div>
+                    <div class="home-ladder-item home-ladder-1">Non-Invasive Screening</div>
+                    <div class="home-ladder-item home-ladder-2">Fast AI Results</div>
+                    <div class="home-ladder-item home-ladder-3">Privacy Protected</div>
+                    <div class="home-ladder-item home-ladder-4">Evidence-Based Insights</div>
                 </div>
             </div>
             """,
