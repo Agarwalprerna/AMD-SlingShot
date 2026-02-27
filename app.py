@@ -334,6 +334,13 @@ st.markdown("""
         max-width: 220px;
         line-height: 1.2;
     }
+    .home-feature-tick {
+        color: #0A8F3D;
+        font-size: 14px;
+        font-weight: 900;
+        margin-right: 6px;
+        vertical-align: middle;
+    }
     .home-features-title {
         position: absolute;
         left: 235px;
@@ -742,10 +749,10 @@ if app_mode == "Home":
                         <img src="{logo_uri}" alt="System logo" />
                     </div>
                     <div class="home-features-title">Key Features of Our System</div>
-                    <div class="home-ladder-item home-ladder-1">Non-Invasive Screening</div>
-                    <div class="home-ladder-item home-ladder-2">Fast AI Results</div>
-                    <div class="home-ladder-item home-ladder-3">Privacy Protected</div>
-                    <div class="home-ladder-item home-ladder-4">Evidence-Based Insights</div>
+                    <div class="home-ladder-item home-ladder-1"><span class="home-feature-tick">✓</span>Non-Invasive Screening</div>
+                    <div class="home-ladder-item home-ladder-2"><span class="home-feature-tick">✓</span>Fast AI Results</div>
+                    <div class="home-ladder-item home-ladder-3"><span class="home-feature-tick">✓</span>Privacy Protected</div>
+                    <div class="home-ladder-item home-ladder-4"><span class="home-feature-tick">✓</span>Evidence-Based Insights</div>
                 </div>
             </div>
             """,
