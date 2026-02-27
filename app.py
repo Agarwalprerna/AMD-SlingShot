@@ -181,11 +181,15 @@ st.markdown("""
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
     }
     .section-title {
-        color: #E9F8FF;
-        font-size: 22px;
+        color: #FFFFFF;
+        font-size: 20px;
         font-weight: 700;
-        margin: 0 0 10px 0;
         line-height: 1.2;
+        margin: -14px -14px 12px -14px;
+        padding: 10px 14px;
+        border-radius: 10px 10px 0 0;
+        background: linear-gradient(90deg, #0e4f95 0%, #1e6fc3 100%);
+        border-bottom: 1px solid rgba(180, 220, 255, 0.45);
     }
 
     .page-hero {
@@ -555,7 +559,7 @@ elif app_mode == "Clinical Parameters Analysis":
         st.markdown("### Enter Patient Clinical Data")
         st.markdown("Simple input form for non-doctors. Fill what you know and keep defaults for missing values.")
         with st.container(border=True):
-            st.markdown('<div class="section-title">1) Physical</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Physical</div>', unsafe_allow_html=True)
             col1, col2 = st.columns(2)
             with col1:
                 age = st.slider("Age (years)", 15, 50, 28)
@@ -571,7 +575,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 pulse = st.slider("Pulse (bpm)", 40, 120, 75)
 
         with st.container(border=True):
-            st.markdown('<div class="section-title">2) Hormonal & Biochemical</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Hormonal & Biochemical</div>', unsafe_allow_html=True)
             col1, col2 = st.columns(2)
             with col1:
                 fsh = st.slider("FSH (mIU/mL)", 1.0, 15.0, 6.5)
@@ -583,7 +587,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
 
         with st.container(border=True):
-            st.markdown('<div class="section-title">3) Clinical & Lifestyle</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Lifestyle</div>', unsafe_allow_html=True)
             col1, col2 = st.columns(2)
             with col1:
                 acne = st.selectbox("Acne", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
@@ -595,7 +599,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
 
         with st.container(border=True):
-            st.markdown('<div class="section-title">4) Upload Ultrasound Images</div>', unsafe_allow_html=True)
+            st.markdown('<div class="section-title">Upload Ultrasound Images</div>', unsafe_allow_html=True)
             uploaded_usg = st.file_uploader(
                 "Upload ultrasound image(s) (optional)",
                 type=["png", "jpg", "jpeg"],
