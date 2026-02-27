@@ -172,7 +172,7 @@ st.markdown("""
         justify-content: center;
         margin-bottom: 14px;
     }
-    .section-card {
+    div[data-testid="stVerticalBlockBorderWrapper"] {
         background: linear-gradient(145deg, #0b2f57 0%, #0a2545 100%);
         border: 1px solid rgba(120, 188, 238, 0.45);
         border-radius: 12px;
@@ -187,9 +187,6 @@ st.markdown("""
         margin: 0 0 10px 0;
         line-height: 1.2;
     }
-    .section-card-2 { }
-    .section-card-3 { }
-    .section-card-4 { }
 
     .page-hero {
         position: relative;
@@ -557,65 +554,64 @@ elif app_mode == "Clinical Parameters Analysis":
     else:
         st.markdown("### Enter Patient Clinical Data")
         st.markdown("Simple input form for non-doctors. Fill what you know and keep defaults for missing values.")
-        st.markdown('<div class="section-card section-card-1">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">1) Physical</div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            age = st.slider("Age (years)", 15, 50, 28)
-            height_cm = st.slider("Height (cm)", 140, 200, 165)
-            weight_kg = st.slider("Weight (kg)", 40, 150, 65)
-            bmi = weight_kg / (height_cm / 100) ** 2
-            st.markdown(f"**Calculated BMI:** {bmi:.2f}")
-        with col2:
-            waist_inch = st.slider("Waist (inches)", 20, 50, 30)
-            hip_inch = st.slider("Hip (inches)", 25, 55, 38)
-            waist_hip_ratio = waist_inch / hip_inch
-            st.markdown(f"**Calculated Waist:Hip Ratio:** {waist_hip_ratio:.2f}")
-            pulse = st.slider("Pulse (bpm)", 40, 120, 75)
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-card section-card-2">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">2) Hormonal & Biochemical</div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            fsh = st.slider("FSH (mIU/mL)", 1.0, 15.0, 6.5)
-            lh = st.slider("LH (mIU/mL)", 1.0, 25.0, 8.0)
-            amh = st.slider("AMH (ng/mL)", 0.0, 15.0, 3.5)
-        with col2:
-            testo = st.slider("Testosterone (ng/mL)", 0.0, 1.5, 0.5)
-            insulin = st.slider("Insulin (U/mL)", 0.0, 25.0, 5.0)
-            rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-card section-card-3">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">3) Clinical & Lifestyle</div>', unsafe_allow_html=True)
-        col1, col2 = st.columns(2)
-        with col1:
-            acne = st.selectbox("Acne", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-            hair_growth = st.selectbox("Excess Hair Growth", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-            skin_darkening = st.selectbox("Skin Darkening", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-        with col2:
-            pimples = st.selectbox("Pimples", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-            fast_food = st.selectbox("Frequent Fast Food", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-            reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-        st.markdown('</div>', unsafe_allow_html=True)
-        st.markdown('<div class="section-card section-card-4">', unsafe_allow_html=True)
-        st.markdown('<div class="section-title">4) Upload Ultrasound Images</div>', unsafe_allow_html=True)
-        uploaded_usg = st.file_uploader(
-            "Upload ultrasound image(s) (optional)",
-            type=["png", "jpg", "jpeg"],
-            accept_multiple_files=True
-        )
-        col1, col2 = st.columns(2)
-        with col1:
-            follicles_l = st.slider("Follicle Count (Left Ovary)", 0, 30, 8)
-        with col2:
-            follicles_r = st.slider("Follicle Count (Right Ovary)", 0, 30, 8)
-        if uploaded_usg:
-            st.caption(f"{len(uploaded_usg)} image(s) uploaded")
-            preview_cols = st.columns(min(3, len(uploaded_usg)))
-            for idx, file in enumerate(uploaded_usg[:3]):
-                with preview_cols[idx]:
-                    st.image(file, caption=f"Ultrasound {idx + 1}", use_container_width=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        with st.container(border=True):
+            st.markdown('<div class="section-title">1) Physical</div>', unsafe_allow_html=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                age = st.slider("Age (years)", 15, 50, 28)
+                height_cm = st.slider("Height (cm)", 140, 200, 165)
+                weight_kg = st.slider("Weight (kg)", 40, 150, 65)
+                bmi = weight_kg / (height_cm / 100) ** 2
+                st.markdown(f"**Calculated BMI:** {bmi:.2f}")
+            with col2:
+                waist_inch = st.slider("Waist (inches)", 20, 50, 30)
+                hip_inch = st.slider("Hip (inches)", 25, 55, 38)
+                waist_hip_ratio = waist_inch / hip_inch
+                st.markdown(f"**Calculated Waist:Hip Ratio:** {waist_hip_ratio:.2f}")
+                pulse = st.slider("Pulse (bpm)", 40, 120, 75)
+
+        with st.container(border=True):
+            st.markdown('<div class="section-title">2) Hormonal & Biochemical</div>', unsafe_allow_html=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                fsh = st.slider("FSH (mIU/mL)", 1.0, 15.0, 6.5)
+                lh = st.slider("LH (mIU/mL)", 1.0, 25.0, 8.0)
+                amh = st.slider("AMH (ng/mL)", 0.0, 15.0, 3.5)
+            with col2:
+                testo = st.slider("Testosterone (ng/mL)", 0.0, 1.5, 0.5)
+                insulin = st.slider("Insulin (U/mL)", 0.0, 25.0, 5.0)
+                rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
+
+        with st.container(border=True):
+            st.markdown('<div class="section-title">3) Clinical & Lifestyle</div>', unsafe_allow_html=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                acne = st.selectbox("Acne", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+                hair_growth = st.selectbox("Excess Hair Growth", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+                skin_darkening = st.selectbox("Skin Darkening", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+            with col2:
+                pimples = st.selectbox("Pimples", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+                fast_food = st.selectbox("Frequent Fast Food", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+                reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+
+        with st.container(border=True):
+            st.markdown('<div class="section-title">4) Upload Ultrasound Images</div>', unsafe_allow_html=True)
+            uploaded_usg = st.file_uploader(
+                "Upload ultrasound image(s) (optional)",
+                type=["png", "jpg", "jpeg"],
+                accept_multiple_files=True
+            )
+            col1, col2 = st.columns(2)
+            with col1:
+                follicles_l = st.slider("Follicle Count (Left Ovary)", 0, 30, 8)
+            with col2:
+                follicles_r = st.slider("Follicle Count (Right Ovary)", 0, 30, 8)
+            if uploaded_usg:
+                st.caption(f"{len(uploaded_usg)} image(s) uploaded")
+                preview_cols = st.columns(min(3, len(uploaded_usg)))
+                for idx, file in enumerate(uploaded_usg[:3]):
+                    with preview_cols[idx]:
+                        st.image(file, caption=f"Ultrasound {idx + 1}", use_container_width=True)
         if st.button("Analyze Patient", type="primary", use_container_width=True):
             patient_data = {
                 'Age': age,
