@@ -279,8 +279,8 @@ st.markdown("""
         100% { opacity: 0.7; transform: translateX(0px); text-shadow: 0 0 0 rgba(0,207,255,0.0); }
     }
     .rotterdam-box {
-        background: linear-gradient(145deg, rgba(7, 24, 58, 0.98) 0%, rgba(5, 18, 46, 0.98) 100%);
-        border: 1px solid rgba(95, 156, 235, 0.5);
+        background: transparent;
+        border: 1px solid rgba(95, 156, 235, 0.35);
         border-left: 6px solid #1f77b4;
         border-radius: 12px;
         padding: 22px 20px;
@@ -722,7 +722,7 @@ elif app_mode == "Clinical Parameters Analysis":
                 skin_darkening = st.selectbox("Skin Darkening", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
             with col2:
                 pimples = st.selectbox("Pimples", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
-                fast_food = st.selectbox("Frequent Fast Food", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
+                fast_food = st.selectbox("Irregular Periods", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
                 reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
 
         with st.container(border=True):
