@@ -287,13 +287,13 @@ st.markdown("""
         margin: 10px 0 16px 0;
     }
     .rotterdam-main-title {
-        color: #FFFFFF;
+        color: #0A2342;
         font-size: 30px;
         font-weight: 800;
         margin: 0 0 6px 0;
     }
     .rotterdam-desc {
-        color: #D5E8FF;
+        color: #1B3A5B;
         font-size: 18px;
         margin: 0 0 18px 0;
     }
@@ -318,7 +318,7 @@ st.markdown("""
         margin-bottom: 8px;
     }
     .rotterdam-step-text {
-        color: #FFFFFF;
+        color: #0F2D4E;
         font-size: 21px;
         font-weight: 700;
         line-height: 1.25;
