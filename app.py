@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import os
 import base64
+import numpy as np
 from PIL import Image, ImageDraw
 import warnings
 warnings.filterwarnings('ignore')
@@ -400,6 +401,97 @@ def get_home_banner_image_path():
     return None
 
 
+def _count_connected_components(binary_mask):
+    """Return connected component stats from a binary mask."""
+    h, w = binary_mask.shape
+    visited = np.zeros((h, w), dtype=bool)
+    components = []
+
+    for y in range(h):
+        for x in range(w):
+            if not binary_mask[y, x] or visited[y, x]:
+                continue
+
+            stack = [(y, x)]
+            visited[y, x] = True
+            area = 0
+            min_y = max_y = y
+            min_x = max_x = x
+
+            while stack:
+                cy, cx = stack.pop()
+                area += 1
+                min_y = min(min_y, cy)
+                max_y = max(max_y, cy)
+                min_x = min(min_x, cx)
+                max_x = max(max_x, cx)
+
+                for ny in range(max(0, cy - 1), min(h, cy + 2)):
+                    for nx in range(max(0, cx - 1), min(w, cx + 2)):
+                        if binary_mask[ny, nx] and not visited[ny, nx]:
+                            visited[ny, nx] = True
+                            stack.append((ny, nx))
+
+            components.append(
+                {
+                    "area": area,
+                    "width": max_x - min_x + 1,
+                    "height": max_y - min_y + 1,
+                }
+            )
+    return components
+
+
+def estimate_follicle_count_from_image(uploaded_file):
+    """Estimate follicle count from one ultrasound image using blob heuristics."""
+    uploaded_file.seek(0)
+    image = Image.open(uploaded_file).convert("L")
+    image.thumbnail((512, 512))
+    arr = np.array(image, dtype=np.float32)
+
+    p2, p98 = np.percentile(arr, [2, 98])
+    arr = np.clip((arr - p2) / max(1e-6, p98 - p2), 0.0, 1.0)
+
+    h, w = arr.shape
+    y0, y1 = int(h * 0.06), int(h * 0.94)
+    x0, x1 = int(w * 0.06), int(w * 0.94)
+    roi = arr[y0:y1, x0:x1]
+    if roi.size == 0:
+        return 0
+
+    threshold = np.percentile(roi, 30)
+    binary = roi < threshold
+    components = _count_connected_components(binary)
+
+    count = 0
+    for comp in components:
+        area = comp["area"]
+        width = comp["width"]
+        height = comp["height"]
+        aspect = min(width, height) / max(width, height)
+        if 20 <= area <= 1200 and aspect >= 0.45 and 4 <= width <= 60 and 4 <= height <= 60:
+            count += 1
+
+    return int(max(0, min(30, count)))
+
+
+def estimate_left_right_follicles(uploaded_files):
+    """Estimate left/right follicle counts from uploaded ultrasound images."""
+    if not uploaded_files:
+        return None, None
+
+    counts = []
+    for file in uploaded_files[:2]:
+        try:
+            counts.append(estimate_follicle_count_from_image(file))
+        except Exception:
+            counts.append(0)
+
+    if len(counts) == 1:
+        return counts[0], counts[0]
+    return counts[0], counts[1]
+
+
 def get_home_logo_markup():
     """Return circular home logo markup if available, else fallback SVG."""
     logo_path = os.path.join(BASE_DIR, "assets", "logo.png")
@@ -581,22 +673,27 @@ elif app_mode == "Clinical Parameters Analysis":
         with st.container(border=True):
             st.markdown('<div class="section-title">Upload Ultrasound Images</div>', unsafe_allow_html=True)
             uploaded_usg = st.file_uploader(
-                "Upload ultrasound image(s) (optional)",
+                "Upload ultrasound image(s) for automatic follicle counting",
                 type=["png", "jpg", "jpeg"],
                 accept_multiple_files=True
             )
-            col1, col2 = st.columns(2)
-            with col1:
-                follicles_l = st.slider("Follicle Count (Left Ovary)", 0, 30, 8)
-            with col2:
-                follicles_r = st.slider("Follicle Count (Right Ovary)", 0, 30, 8)
+            follicles_l, follicles_r = estimate_left_right_follicles(uploaded_usg) if uploaded_usg else (None, None)
             if uploaded_usg:
                 st.caption(f"{len(uploaded_usg)} image(s) uploaded")
                 preview_cols = st.columns(min(3, len(uploaded_usg)))
                 for idx, file in enumerate(uploaded_usg[:3]):
                     with preview_cols[idx]:
                         st.image(file, caption=f"Ultrasound {idx + 1}", use_container_width=True)
+                st.markdown(f"**Estimated Follicle Count (Left Ovary):** {follicles_l}")
+                st.markdown(f"**Estimated Follicle Count (Right Ovary):** {follicles_r}")
+                if len(uploaded_usg) == 1:
+                    st.caption("Only one image uploaded; same estimate used for both ovaries.")
+            else:
+                st.info("Upload at least one ultrasound image to estimate follicle counts automatically.")
         if st.button("Analyze Patient", type="primary", use_container_width=True):
+            if follicles_l is None or follicles_r is None:
+                st.error("Please upload ultrasound image(s) so follicle counts can be estimated automatically.")
+                st.stop()
             patient_data = {
                 'Age': age,
                 'Height(Cm) ': height_cm,
