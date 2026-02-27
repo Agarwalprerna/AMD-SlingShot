@@ -411,6 +411,12 @@ st.markdown("""
         font-weight: 700;
         line-height: 1.25;
     }
+    .rotterdam-step-meaning {
+        color: #274C74;
+        font-size: 14px;
+        line-height: 1.35;
+        margin-top: 6px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -718,14 +724,17 @@ if app_mode == "Home":
                 <div class="rotterdam-step">
                     <div class="rotterdam-step-num">01</div>
                     <div class="rotterdam-step-text">Irregular ovulation</div>
+                    <div class="rotterdam-step-meaning">Periods are infrequent, delayed, or absent due to irregular egg release.</div>
                 </div>
                 <div class="rotterdam-step">
                     <div class="rotterdam-step-num">02</div>
                     <div class="rotterdam-step-text">Hyperandrogenism</div>
+                    <div class="rotterdam-step-meaning">Higher androgen hormone effect may appear as acne, excess hair growth, or lab changes.</div>
                 </div>
                 <div class="rotterdam-step">
                     <div class="rotterdam-step-num">03</div>
                     <div class="rotterdam-step-text">Polycystic ovaries on ultrasound.</div>
+                    <div class="rotterdam-step-meaning">Ultrasound shows multiple small follicles in one or both ovaries.</div>
                 </div>
             </div>
         </div>
