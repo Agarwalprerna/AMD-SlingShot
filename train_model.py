@@ -143,7 +143,7 @@ def train_model(data_path='PCOS_data_without_infertility.xlsx', output_path='bes
         y_train, y_test = y.iloc[train_idx], y.iloc[test_idx]
         
         # Inner cross-validation for hyperparameter tuning
-        xgb_model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+        xgb_model = xgb.XGBClassifier(eval_metric='logloss', random_state=42)
         grid_search = GridSearchCV(xgb_model, param_grid, cv=3, scoring='accuracy', n_jobs=-1, verbose=0)
         grid_search.fit(X_train, y_train)
         
@@ -197,7 +197,7 @@ def train_model(data_path='PCOS_data_without_infertility.xlsx', output_path='bes
         most_common_params = dict(most_common)
         print(f"Best hyperparameters: {most_common_params}")
     
-    final_model = xgb.XGBClassifier(**most_common_params, use_label_encoder=False, eval_metric='logloss', random_state=42)
+    final_model = xgb.XGBClassifier(**most_common_params, eval_metric='logloss', random_state=42)
     final_model.fit(X, y)
     
     # Get feature importance
