@@ -284,6 +284,7 @@ st.markdown("""
         justify-content: flex-start;
         gap: 0;
         margin: 8px 0 12px 0;
+        line-height: 1;
     }
     .home-banner-pane img {
         width: 480px;
@@ -296,12 +297,12 @@ st.markdown("""
     }
     .home-logo-zone {
         position: relative;
-        margin-left: -2px;
-        width: 420px;
+        margin-left: -8px;
+        width: 460px;
         min-height: 320px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
     }
     .home-logo-semicircle {
         width: 210px;
@@ -324,30 +325,39 @@ st.markdown("""
     }
     .home-ladder-item {
         position: absolute;
-        left: 200px;
-        background: rgba(16, 88, 166, 0.94);
-        color: #E9F8FF;
-        border: 1px solid rgba(120, 188, 238, 0.45);
-        border-left: 5px solid #00CFFF;
-        border-radius: 10px;
-        padding: 8px 12px;
-        font-size: 15px;
+        left: 235px;
+        color: #0D2E53;
+        padding: 0;
+        font-size: 20px;
         font-weight: 700;
-        white-space: nowrap;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        white-space: normal;
+        max-width: 220px;
+        line-height: 1.2;
     }
-    .home-ladder-1 { top: 24px; }
-    .home-ladder-2 { top: 84px; left: 224px; }
-    .home-ladder-3 { top: 146px; left: 248px; }
-    .home-ladder-4 { top: 208px; left: 272px; }
+    .home-features-title {
+        position: absolute;
+        left: 235px;
+        top: 6px;
+        color: #0A2342;
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1.1;
+        max-width: 240px;
+    }
+    .home-ladder-1 { top: 78px; }
+    .home-ladder-2 { top: 132px; left: 252px; }
+    .home-ladder-3 { top: 186px; left: 269px; }
+    .home-ladder-4 { top: 240px; left: 286px; }
     @media (max-width: 1100px) {
         .home-visual-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
         .home-banner-pane img { width: 100%; height: auto; }
-        .home-logo-zone { margin-left: 0; width: 100%; min-height: 260px; justify-content: flex-start; }
-        .home-ladder-item { left: 220px; }
-        .home-ladder-2 { left: 236px; }
-        .home-ladder-3 { left: 252px; }
-        .home-ladder-4 { left: 268px; }
+        .home-logo-zone { margin-left: 0; width: 100%; min-height: 320px; justify-content: flex-start; }
+        .home-features-title { left: 236px; top: 2px; font-size: 24px; }
+        .home-ladder-item { left: 236px; max-width: 250px; font-size: 18px; }
+        .home-ladder-1 { top: 66px; }
+        .home-ladder-2 { top: 116px; left: 248px; }
+        .home-ladder-3 { top: 166px; left: 260px; }
+        .home-ladder-4 { top: 216px; left: 272px; }
     }
     .rotterdam-box {
         background: transparent;
@@ -731,6 +741,7 @@ if app_mode == "Home":
                     <div class="home-logo-semicircle">
                         <img src="{logo_uri}" alt="System logo" />
                     </div>
+                    <div class="home-features-title">Key Features of Our System</div>
                     <div class="home-ladder-item home-ladder-1">01  Non-Invasive Screening</div>
                     <div class="home-ladder-item home-ladder-2">02  Fast AI Results</div>
                     <div class="home-ladder-item home-ladder-3">03  Privacy Protected</div>
