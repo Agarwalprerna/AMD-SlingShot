@@ -180,6 +180,13 @@ st.markdown("""
         margin: 14px 0;
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
     }
+    .section-title {
+        color: #E9F8FF;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+        line-height: 1.2;
+    }
     .section-card-2 { }
     .section-card-3 { }
     .section-card-4 { }
@@ -551,7 +558,7 @@ elif app_mode == "Clinical Parameters Analysis":
         st.markdown("### Enter Patient Clinical Data")
         st.markdown("Simple input form for non-doctors. Fill what you know and keep defaults for missing values.")
         st.markdown('<div class="section-card section-card-1">', unsafe_allow_html=True)
-        st.markdown("### 1) Physical")
+        st.markdown('<div class="section-title">1) Physical</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             age = st.slider("Age (years)", 15, 50, 28)
@@ -567,7 +574,7 @@ elif app_mode == "Clinical Parameters Analysis":
             pulse = st.slider("Pulse (bpm)", 40, 120, 75)
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-card section-card-2">', unsafe_allow_html=True)
-        st.markdown("### 2) Hormonal & Biochemical")
+        st.markdown('<div class="section-title">2) Hormonal & Biochemical</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             fsh = st.slider("FSH (mIU/mL)", 1.0, 15.0, 6.5)
@@ -579,7 +586,7 @@ elif app_mode == "Clinical Parameters Analysis":
             rbs = st.slider("RBS (mg/dL)", 70, 200, 100)
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-card section-card-3">', unsafe_allow_html=True)
-        st.markdown("### 3) Clinical & Lifestyle")
+        st.markdown('<div class="section-title">3) Clinical & Lifestyle</div>', unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         with col1:
             acne = st.selectbox("Acne", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
@@ -591,7 +598,7 @@ elif app_mode == "Clinical Parameters Analysis":
             reg_exercise = st.selectbox("Regular Exercise", [0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-card section-card-4">', unsafe_allow_html=True)
-        st.markdown("### 4) Upload Ultrasound Images")
+        st.markdown('<div class="section-title">4) Upload Ultrasound Images</div>', unsafe_allow_html=True)
         uploaded_usg = st.file_uploader(
             "Upload ultrasound image(s) (optional)",
             type=["png", "jpg", "jpeg"],
