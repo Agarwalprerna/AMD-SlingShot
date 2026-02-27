@@ -251,7 +251,7 @@ st.markdown("""
     .feature-item {
         color: #E9F8FF;
         margin: 8px 0;
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 600;
         opacity: 0.85;
         animation: keywordPulse 1.8s ease-in-out infinite;
@@ -521,7 +521,7 @@ if app_mode == "Home":
         st.markdown(
             """
             <div class="feature-panel">
-                <div class="feature-title">Key Features</div>
+                <div class="feature-title">Key Features of Our System</div>
                 <div class="feature-item">✓ Non-Invasive Screening</div>
                 <div class="feature-item">✓ Fast AI Results</div>
                 <div class="feature-item">✓ Privacy Protected</div>
