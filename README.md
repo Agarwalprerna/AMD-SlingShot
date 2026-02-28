@@ -4,6 +4,11 @@
 > A comprehensive, web-based PCOS detection system making early diagnosis accessible to underserved communities.
 > Built for Hackathon AMD-Slingshot 2026.
 
+## Developers
+
+- Prerna Agarwal
+- Yash Patel
+
 ## 🎯 Overview
 
 This project presents an end-to-end solution for detecting **Polycystic Ovary Syndrome (PCOS)** using:
@@ -151,6 +156,13 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 - **Source:** Clinical dataset (PCOS_data_without_infertility.xlsx)
 - **USG Images:** Available at [Figshare Dataset](https://figshare.com/articles/dataset/PCOS_Dataset/27682557?file=50407062)
 
+
+### Data Availability
+
+- **Clinical Dataset:** `PCOS_data_without_infertility.xlsx` (included in repository)
+- **Ultrasound Images Dataset:** Available at [Figshare](https://figshare.com/articles/dataset/PCOS_Dataset/27682557?file=50407062)
+- **Ultrasound Images Dataset (Additional):** [Kaggle - PCOS Detection Using Ultrasound Images](https://www.kaggle.com/datasets/anaghachoudhari/pcos-detection-using-ultrasound-images)
+
 ## 📈 Model Performance
 
 ### Training Results (5-Fold Nested Cross-Validation)
@@ -226,35 +238,10 @@ The project is based on:
 - Clinical studies on PCOS pathophysiology
 - Machine learning approaches in healthcare
 - Deep learning for medical image analysis
+- CystNet: An AI-driven model for PCOS detection using multilevel thresholding of ultrasound images: https://www.researchgate.net/publication/385177794_CystNet_An_AI_driven_model_for_PCOS_detection_using_multilevel_thresholding_of_ultrasound_images
+- International evidence-based guideline for the assessment and management of PCOS (Monash): https://www.monash.edu/medicine/mchri/pcos/guideline
+- Revised 2003 consensus on diagnostic criteria and long-term health risks related to PCOS: https://academic.oup.com/humrep/article/32/2/261/2452298
 
-## 👥 Contributing
-
-Contributions are welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-##  Contact & Support
-
-
-## Developers
-
-- Prerna Agarwal
-- Yash Patel
-
-## 🙏 Acknowledgments
-
-- Dataset contributors and clinical partners
-- Open-source community (Streamlit, XGBoost, TensorFlow)
-- Hackathon organizers and reviewers
-
----
-
-## 📊 Data Availability
-
-- **Clinical Dataset:** `PCOS_data_without_infertility.xlsx` (included in repository)
-- **Ultrasound Images Dataset:** Available at [Figshare](https://figshare.com/articles/dataset/PCOS_Dataset/27682557?file=50407062)
 
 ## 🔍 Detailed Notebooks
 
@@ -289,4 +276,24 @@ Use this notebook when working with ovarian ultrasound images and image-model tr
 
 **Made with ❤️ for healthcare accessibility | AI for Social Good**
 
+
+
+## 👥 Contributing
+
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+##  Contact & Support
+
+`r`n
+## 🙏 Acknowledgments
+
+- Dataset contributors and clinical partners
+- Open-source community (Streamlit, XGBoost, TensorFlow)
+- AMD Hackathon organizers and reviewers
+
+---
 
