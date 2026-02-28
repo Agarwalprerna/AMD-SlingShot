@@ -1,7 +1,8 @@
-# 🏥 End-to-End PCOS Detection Using AI - MVP Prototype
+# 🏥 AI Powered PCOS Detection - MVP Prototype
 
 > **AI for Social Good - Healthcare Product**  
 > A comprehensive, web-based PCOS detection system making early diagnosis accessible to underserved communities.
+> Built for Hackathon AMD-Slingshot 2026.
 
 ## 🎯 Overview
 
@@ -17,7 +18,7 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 
 ## 🚀 Live Demo
 
-**Try the PCOS Detection System:** [Streamlit Cloud Link] *(Deploy link will be provided)*
+**Try the PCOS Detection System:** [Live App](https://amd-slingshotgit-metgkzbhgixncfnpgbcczu.streamlit.app/)
 
 ## 📁 Repository Structure
 
@@ -42,7 +43,6 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 - **Model:** XGBoost with nested cross-validation
 - **Features:** 43 clinical parameters including:
   - Hormonal levels (FSH, LH, Testosterone, AMH, etc.)
-  - Metabolic markers (BMI, Insulin, Blood glucose, Cholesterol)
   - Physical measurements (Waist, Hip, Blood pressure)
   - Symptoms (Acne, Hair loss, Skin darkening, etc.)
 - **Performance:**
@@ -58,6 +58,12 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
   - Image preprocessing and augmentation
   - Transfer learning with ImageNet weights
   - Binary classification (PCOS vs Non-PCOS)
+- **Why CNN is used for image processing:**
+  - CNNs learn local visual patterns (edges, textures, cyst-like circular regions) directly from pixel grids.
+  - Shared convolution filters reduce parameters compared to fully connected networks, which improves learning on limited medical image datasets.
+  - Pooling and deep feature hierarchies make the model more robust to small shifts, scale changes, and ultrasound noise/speckle.
+  - Transfer learning allows starting from general visual features learned on large datasets, then adapting to domain-specific USG patterns with fewer labeled samples.
+  - Compared with hand-crafted image features, CNNs provide an end-to-end pipeline that usually gives better generalization for binary medical image classification tasks.
 
 ## ⚡ Quick Start
 
@@ -98,14 +104,9 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 
 #### 2. **Clinical Parameters Analysis**
    - **Individual Patient Analysis:**
-     - Input 43 clinical parameters
+     - Input  clinical parameters
      - Get instant PCOS risk prediction
      - View confidence scores and recommendations
-   
-   - **Batch Analysis:**
-     - Upload CSV file with multiple patient records
-     - Get predictions for all patients
-     - Download results in CSV format
 
 #### 3. **About PCOS**
    - Medical information about PCOS
@@ -135,13 +136,6 @@ PCOS affects 6-20% of women globally. Early detection is crucial as it's a leadi
 - Beta-HCG
 - Prolactin
 - TSH (Thyroid Stimulating Hormone)
-
-#### Metabolic Markers
-- Insulin level
-- RBS (Random Blood Sugar)
-- HbA1c
-- Total Cholesterol
-- Vitamin D3
 
 #### Clinical Symptoms (Yes/No)
 - Acne, Hair growth, Hair loss
@@ -243,9 +237,11 @@ Contributions are welcome! Please:
 
 ##  Contact & Support
 
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Contact the development team
+
+## Developers
+
+- Prerna Agarwal
+- Yash Patel
 
 ## 🙏 Acknowledgments
 
@@ -263,14 +259,34 @@ For issues, questions, or suggestions:
 ## 🔍 Detailed Notebooks
 
 ### 1. PCOS Detection Based on Physical and Clinical Parameters
-This notebook explores machine learning classification using XGBoost with clinical parameters for PCOS detection.
+Primary notebook for **structured clinical-data modeling**.
+- Loads and cleans `PCOS_data_without_infertility.xlsx`
+- Engineers important features (for example BMI and Waist:Hip ratio)
+- Trains and tunes XGBoost using nested cross-validation
+- Evaluates metrics and extracts feature importance
+- Saves the trained clinical model used by the app pipeline
+
+Use this notebook when the input is lab values, vitals, and symptom variables (not ultrasound images).
 
 ### 2. deepseek-for-pcos-detection
-Advanced deep learning approach using DeepSeek framework for analyzing ultrasound images.
+Prototype notebook for **LLM-assisted clinical interpretation workflow**.
+- Uses a `transformers` pipeline and prompt generation for patient context
+- Demonstrates how PCOS-related patient fields can be converted into model prompts
+- Useful for experimentation with explanation/assistant-style outputs
+
+Use this notebook for language-model prompt/testing experiments, not for training the final image classifier.
 
 ### 3. pcos-detection-from-usg-images
-CNN-based analysis of ultrasound images with comprehensive preprocessing and augmentation.
+Primary notebook for **ultrasound image classification**.
+- Organizes USG image folders into train/validation/test splits
+- Builds and trains the CNN model for PCOS vs Non-PCOS classification
+- Tracks training/validation curves and evaluates test performance
+- Exports the trained image model (`pcos_cnn_model.h5`)
+
+Use this notebook when working with ovarian ultrasound images and image-model training/evaluation.
 
 ---
 
 **Made with ❤️ for healthcare accessibility | AI for Social Good**
+
+
